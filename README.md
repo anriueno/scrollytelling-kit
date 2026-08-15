@@ -2,6 +2,8 @@
 
 **Turn any CSV into a scroll-driven data story** — the New York Times / Pudding style: sticky animated charts, narrative that scrolls past, charts that morph as you read.
 
+**Live demos built with it:** [The Solar Century](https://solar-century.vercel.app) (energy) · [The Price of a Year](https://price-of-a-year.vercel.app) (health spending vs. life expectancy) · [The Death of the Department Store](https://retail-shift.vercel.app) (US retail).
+
 A Claude Code **plugin/skill** that does the storytelling work with you (profile the data → verified facts → story angles → storyboard → page), on top of a reusable **D3 + Scrollama engine** driven by one `story.json`. No chart code.
 
 ## Install (Claude Code)
