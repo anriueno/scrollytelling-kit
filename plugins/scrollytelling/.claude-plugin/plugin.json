@@ -3,9 +3,9 @@
   "displayName": "Scrollytelling",
   "description": "Turn any CSV into a scroll-driven data story (NYT / Pudding style) — profiles the data, finds the story with you, and generates a D3 + Scrollama page from a single story.json.",
   "version": "0.1.0",
-  "author": { "name": "Anri Ferris", "url": "https://github.com/anriferris" },
-  "homepage": "https://github.com/anriferris/scrollytelling-kit",
-  "repository": "https://github.com/anriferris/scrollytelling-kit.git",
+  "author": { "name": "Anri Ferris", "url": "https://github.com/anriueno" },
+  "homepage": "https://github.com/anriueno/scrollytelling-kit",
+  "repository": "https://github.com/anriueno/scrollytelling-kit.git",
   "license": "MIT",
   "keywords": ["data-visualization", "scrollytelling", "d3", "data-story", "storytelling", "charts"],
   "skills": "./skills/"

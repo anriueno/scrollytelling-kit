@@ -7,7 +7,7 @@ A Claude Code **plugin/skill** that does the storytelling work with you (profile
 ## Install (Claude Code)
 
 ```
-/plugin marketplace add anriferris/scrollytelling-kit
+/plugin marketplace add anriueno/scrollytelling-kit
 /plugin install scrollytelling@scrollytelling-kit
 ```
 
@@ -20,7 +20,7 @@ Then, in any project:
 
 Manual install without the plugin system:
 ```bash
-git clone https://github.com/anriferris/scrollytelling-kit
+git clone https://github.com/anriueno/scrollytelling-kit
 ln -s "$(pwd)/scrollytelling-kit/plugins/scrollytelling/skills/scrollytelling" ~/.claude/skills/scrollytelling
 ```
 
