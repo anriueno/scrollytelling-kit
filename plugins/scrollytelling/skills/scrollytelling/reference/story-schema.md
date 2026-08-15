@@ -43,8 +43,8 @@ spec: `{ "type": "line", "data", "x", "ys": [cols] | ("y" + "series" col for lon
 state: `{ "series": [keys], "highlight": [keys], "focus": facetValue, "where", "yDomain", "endLabels": bool, "annotations": [ { "facet", "series": key, "x", "text": "Coal {value}", "anchor", "dx", "dy" } ] }`
 
 ### `bar` — horizontal bars
-spec: `{ "type": "bar", "data", "category", "value", "note" (col shown after value), "format", "valueLabel", "color", "colors": {cat: hex}, "negativeColor" (default red; negatives draw left of a zero line), "colorNegatives": false, "sort": "desc|asc|none" (null/omitted = desc), "limit", "where", "defaults" }`
-state: `{ "values": [ { "category", "value": ref, "color" } ] (inline, computed), "where", "sort", "limit", "highlight": [cats] }`
+spec: `{ "type": "bar", "data", "category", "value", "note" (col shown after value), "format", "valueLabel", "color", "colors": {cat: hex}, "negativeColor" (default red; negatives draw left of a zero line), "colorNegatives": false, "highlightColor", "sort": "desc|asc|none" (null/omitted = desc), "limit", "where", "defaults" }`
+state: `{ "values": [ { "category", "value": ref, "color" } ] (inline, computed), "where", "sort", "limit", "highlight": [cats], "highlightColor" }`
 
 ### `scatter` — x/y with size, fit line, highlight sets, year scrub, connected-scatter paths
 spec: `{ "type": "scatter", "data", "x", "y", "size", "id", "year" (col), "xLog": bool, "xDomain", "yDomain", "xTicks": [values], "format": { "x": …, "y": … }, "xLabel", "yLabel", "accent": { "United States": "#d95926" } (ids that always keep their colour), "color", "legend": "Other countries", "tooltip": [cols], "where", "defaults" }`

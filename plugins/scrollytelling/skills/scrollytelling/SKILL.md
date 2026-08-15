@@ -13,7 +13,7 @@ description: >-
   export. Invoke with an optional path to the data file.
 license: MIT
 metadata:
-  version: "0.3.2"
+  version: "0.3.3"
   author: anriueno
 ---
 
