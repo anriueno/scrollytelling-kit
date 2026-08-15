@@ -18,7 +18,9 @@ async function main() {
   document.title = story.title;
   // theme: story.theme = { preset: "dark"|"paper"|"bold", accent, density: "reading"|"presentation", palette? }; ?theme= & ?density= URL params override (used for style previews)
   const q = new URLSearchParams(location.search);
-  applyTheme({ ...(story.theme || {}), ...(q.get("theme") ? { preset: q.get("theme") } : {}), ...(q.get("density") ? { density: q.get("density") } : {}), ...(q.get("accent") ? { accent: "#" + q.get("accent").replace("#", "") } : {}) });
+  const saved = (() => { try { return localStorage.getItem("scrolly-theme"); } catch { return null; } })();
+  const themeCfg = { ...(story.theme || {}), ...(saved ? { preset: saved } : {}), ...(q.get("theme") ? { preset: q.get("theme") } : {}), ...(q.get("density") ? { density: q.get("density") } : {}), ...(q.get("accent") ? { accent: "#" + q.get("accent").replace("#", "") } : {}) };
+  applyTheme(themeCfg);
   // datasets
   const datasets = {};
   await Promise.all(Object.entries(story.data || {}).map(async ([k, f]) => { datasets[k] = await d3.csv(`${base}data/${f}`); }));
@@ -55,6 +57,21 @@ async function main() {
     chart.api.render(state, immediate); scene.lastShown = showName; scene.lastState = state; scene.lastIndex = stepIndex;
   }
   scenes.forEach((s) => renderStep(s, 0, true));
+
+  // ---- optional reader-facing theme switcher: "themeSwitcher": true in story.json ----
+  if (story.themeSwitcher) {
+    const names = { dark: "Dark", paper: "Paper", bold: "Bold" };
+    const sw = document.createElement("div"); sw.className = "theme-switcher"; sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Colour theme");
+    sw.innerHTML = Object.entries(names).map(([k, v]) => `<button type="button" data-t="${k}" aria-pressed="${document.documentElement.dataset.theme === k}">${v}</button>`).join("");
+    document.body.appendChild(sw);
+    sw.addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-t]"); if (!b) return;
+      const preset = b.dataset.t; try { localStorage.setItem("scrolly-theme", preset); } catch {}
+      applyTheme({ ...(story.theme || {}), preset });
+      sw.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x.dataset.t === preset));
+      scenes.forEach((s) => { const { chart, state } = stateFor(s, s.lastIndex || 0); chart.api.render(state, true); });
+    });
+  }
 
   const scrollers = [];
   scenes.forEach((scene) => {

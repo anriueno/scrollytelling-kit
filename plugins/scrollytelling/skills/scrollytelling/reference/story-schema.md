@@ -9,6 +9,7 @@ One file drives the whole page. Charts read the CSVs in `public/data/`; every nu
   //   preset: dark editorial (default) · paper (light, warm) · bold (black, big sans, hot accent). density "presentation" = bigger, fewer words.
   //   For style previews, open the dev URL with ?theme=paper / ?theme=bold / &density=presentation — no file edits needed.
   "data": { "name": "file.csv", … },                 // datasets by name (files in public/data/)
+  "themeSwitcher": true,                             // optional: show a Dark / Paper / Bold toggle to readers (remembered in localStorage)
   "geo": "world.geojson",                            // optional; default world.geojson (ISO3 ids)
   "scenes": [ { "id": "a", "charts": { "<name>": <chartSpec>, … }, "steps": [ <step>, … ] } ],
   "footerTitle": "Method & sources", "footerHtml": "<p>…</p>"

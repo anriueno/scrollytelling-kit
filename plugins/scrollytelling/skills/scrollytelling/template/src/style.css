@@ -182,3 +182,10 @@ select { font: inherit; font-size: 1rem; text-transform: none; letter-spacing: 0
 .chart-layer { position: absolute; inset: 0; transition: opacity .6s ease; }
 .chart-layer.hidden { opacity: 0; pointer-events: none; }
 .chart { position: relative; }
+
+/* ---- reader theme switcher (opt-in via "themeSwitcher": true) ---- */
+.theme-switcher { position: fixed; top: 12px; right: 12px; z-index: 60; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--card); border: 1px solid var(--card-border); backdrop-filter: blur(6px); }
+.theme-switcher button { font: inherit; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); background: transparent; border: 0; border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.theme-switcher button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.theme-switcher button:hover { color: var(--ink); }
+@media (max-width: 900px) { .theme-switcher { top: auto; bottom: 12px; right: 12px; } }

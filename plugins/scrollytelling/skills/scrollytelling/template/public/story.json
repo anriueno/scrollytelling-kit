@@ -1,101 +1,593 @@
 {
-  "title": "The Solar Century",
-  "kicker": "A data story · 2000 → 2024",
-  "subtitle": "How the world is rewiring its electricity — and why it isn't enough yet.",
-  "sourceNote": "Source: Our World in Data (Ember, Energy Institute). Every number on this page is computed from that dataset.",
-  "theme": { "accent": "#f5b700" },
-  "data": {
-    "world": "world_by_source.csv",
-    "big": "big_economies.csv",
-    "c24": "countries_2024.csv",
-    "panel": "countries_panel.csv"
-  },
-  "scenes": [
-    {
-      "id": "a",
-      "charts": {
-        "hero": { "type": "number", "format": ",.0f", "color": "#f5b700", "title": "" },
-        "mix": {
-          "type": "area", "data": "world", "x": "year",
-          "series": ["coal", "gas", "oil", "nuclear", "other_renewable", "hydro", "wind", "solar"],
-          "labels": { "coal": "Coal", "gas": "Gas", "oil": "Oil", "nuclear": "Nuclear", "other_renewable": "Other renewables", "hydro": "Hydro", "wind": "Wind", "solar": "Solar" },
-          "colors": { "coal": "#4b4f57", "gas": "#6e6a63", "oil": "#8a8378", "nuclear": "#9085e9", "other_renewable": "#3f9a45", "hydro": "#3987e5", "wind": "#1ba39a", "solar": "#c98500" },
-          "format": ",.0f",
-          "defaults": { "title": "How the world makes electricity", "subtitle": "Generation by source, TWh, 2000–2024" }
-        },
-        "growth": { "type": "bar", "format": { "format": ",.0f", "prefix": "+", "suffix": " TWh" }, "valueLabel": "Added 2000→2024",
-          "defaults": { "title": "Electricity added since 2000, by source", "subtitle": "TWh, 2000 → 2024" } }
-      },
-      "steps": [
-        { "show": "hero", "heading": "In 2000, solar was a rounding error.", "text": "The entire planet's solar panels produced <strong>1 terawatt-hour</strong> of electricity that year — about 0.007% of the world's power.",
-          "state": { "value": { "data": "world", "where": { "year": 2000 }, "column": "solar" }, "max": { "data": "world", "where": { "year": 2024 }, "column": "wind" }, "label": "TWh of solar electricity, 2000", "from": 0 } },
-        { "show": "hero", "heading": "Then it grew two-thousand-fold.", "text": "By 2024 solar produced <strong>2,143 TWh</strong>. Nothing else in the energy system has ever scaled this fast.",
-          "state": { "value": { "data": "world", "where": { "year": 2024 }, "column": "solar" }, "max": { "data": "world", "where": { "year": 2024 }, "column": "wind" }, "label": "TWh of solar electricity, 2024" } },
-        { "show": "hero", "heading": "Wind did almost the same.", "text": "Wind went from 31 TWh to <strong>2,510 TWh</strong>. Together, solar and wind now supply <strong>15% of the world's electricity</strong>.",
-          "state": { "value": { "data": "world", "where": { "year": 2024 }, "column": "wind" }, "max": { "data": "world", "where": { "year": 2024 }, "column": "wind" }, "label": "TWh of wind electricity, 2024", "sublabel": "" } },
-        { "show": "mix", "heading": "Here is how the world made electricity in 2000…", "text": "Coal, gas and oil produced almost two-thirds of the world's 15,279 TWh.",
-          "state": { "visible": ["coal", "gas", "oil"] } },
-        { "show": "mix", "heading": "…plus the old low-carbon workhorses.", "text": "Hydro and nuclear have been around for decades — and have barely grown since 2000.",
-          "state": { "visible": ["coal", "gas", "oil", "nuclear", "other_renewable", "hydro"] } },
-        { "show": "mix", "heading": "And then solar and wind arrive.", "text": "Nearly invisible until 2010, they now form a fast-thickening layer on top of the world's power supply.",
-          "state": { "highlight": ["wind", "solar"] } },
-        { "show": "mix", "heading": "Two milestones.", "text": "Solar + wind overtook <strong>nuclear in 2021</strong> and, for the first time ever, <strong>hydro in 2024</strong>.",
-          "state": { "highlight": ["wind", "solar"], "annotations": [ { "x": 2021, "xRule": true, "text": "2021: solar + wind overtake nuclear", "anchor": "end", "level": 1 }, { "x": 2024, "xRule": true, "text": "2024: overtake hydro", "anchor": "end" } ] } },
-        { "show": "mix", "heading": "But look at the shares.", "text": "Re-scale the same chart to 100% and the picture changes: fossil fuels still make <strong>59% of the world's electricity</strong>.",
-          "state": { "normalize": true, "subtitle": "Share of generation by source, 2000–2024" } },
-        { "show": "mix", "heading": "64.7% → 59.1%. That's it.", "text": "Twenty-four years of the fastest energy build-out in history moved fossil fuels' share of electricity down by less than six points. Coal generation is at an <strong>all-time high</strong>.",
-          "state": { "normalize": true, "subtitle": "Share of generation by source, 2000–2024", "annotations": [ { "stackTop": "oil", "x": 2000, "text": "Fossil {value}", "anchor": "start", "dy": -10 }, { "stackTop": "oil", "x": 2024, "text": "{value}", "anchor": "end", "dy": -10 } ] } },
-        { "show": "growth", "heading": "Why? Because demand doubled.", "text": "The world added 15,651 TWh since 2000 in three roughly equal chunks. Solar and wind <strong>matched</strong> coal's growth — they didn't <strong>replace</strong> it.",
-          "state": { "values": [
-            { "category": "Coal", "color": "#4b4f57", "value": { "op": "sub", "args": [ { "data": "world", "where": { "year": 2024 }, "column": "coal" }, { "data": "world", "where": { "year": 2000 }, "column": "coal" } ] } },
-            { "category": "Solar + wind", "color": "#c98500", "value": { "op": "sub", "args": [ { "data": "world", "where": { "year": 2024 }, "columns": ["solar", "wind"] }, { "data": "world", "where": { "year": 2000 }, "columns": ["solar", "wind"] } ] } },
-            { "category": "Gas", "color": "#6e6a63", "value": { "op": "sub", "args": [ { "data": "world", "where": { "year": 2024 }, "column": "gas" }, { "data": "world", "where": { "year": 2000 }, "column": "gas" } ] } },
-            { "category": "All other sources", "color": "#5a6070", "value": { "op": "sub", "args": [ { "data": "world", "where": { "year": 2024 }, "columns": ["oil", "nuclear", "hydro", "other_renewable"] }, { "data": "world", "where": { "year": 2000 }, "columns": ["oil", "nuclear", "hydro", "other_renewable"] } ] } }
-          ] } }
-      ]
+ "title": "The Solar Century",
+ "kicker": "A data story · 2000 → 2024",
+ "subtitle": "How the world is rewiring its electricity — and why it isn't enough yet.",
+ "sourceNote": "Source: Our World in Data (Ember, Energy Institute). Every number on this page is computed from that dataset.",
+ "theme": {
+  "accent": "#f5b700"
+ },
+ "data": {
+  "world": "world_by_source.csv",
+  "big": "big_economies.csv",
+  "c24": "countries_2024.csv",
+  "panel": "countries_panel.csv"
+ },
+ "scenes": [
+  {
+   "id": "a",
+   "charts": {
+    "hero": {
+     "type": "number",
+     "format": ",.0f",
+     "color": "#f5b700",
+     "title": ""
     },
-    {
-      "id": "b",
-      "charts": {
-        "sm": { "type": "line", "data": "big", "x": "year", "ys": ["coal_twh", "wind_twh", "solar_twh"], "facet": "country", "facets": ["China", "United States", "European Union (27)", "India"],
-          "labels": { "coal_twh": "Coal", "wind_twh": "Wind", "solar_twh": "Solar", "European Union (27)": "European Union" }, "colors": { "coal_twh": "#8a8378", "wind_twh": "#1ba39a", "solar_twh": "#c98500" }, "format": { "format": ",.0f", "suffix": " TWh" },
-          "defaults": { "title": "Solar, wind and coal generation", "subtitle": "TWh per year, 2000–2024 · same scale in every panel" } }
-      },
-      "steps": [
-        { "heading": "Who is building it?", "text": "The four largest electricity systems, on the same scale. Amber is solar, teal is wind, grey is coal.", "state": {} },
-        { "heading": "China: both records at once.", "text": "China produced <strong>839 TWh of solar</strong> in 2024 — 39% of the world's total — while burning <strong>5,828 TWh of coal</strong>, more than the rest of the world combined.",
-          "state": { "focus": "China", "annotations": [ { "facet": "China", "series": "coal_twh", "x": 2024, "text": "Coal {value}", "anchor": "end", "dx": -8, "dy": -10 }, { "facet": "China", "series": "solar_twh", "x": 2024, "text": "Solar {value}", "anchor": "end", "dx": -8, "dy": -8 } ] } },
-        { "heading": "Europe: the only one that shrank coal.", "text": "The EU's coal generation has fallen to 271 TWh, and fossil fuels now make just <strong>28.6%</strong> of its electricity.",
-          "state": { "focus": "European Union (27)", "annotations": [ { "facet": "European Union (27)", "series": "coal_twh", "x": 2024, "text": "Coal {value}", "anchor": "end", "dx": -8, "dy": -26 } ] } }
-      ]
+    "mix": {
+     "type": "area",
+     "data": "world",
+     "x": "year",
+     "series": [
+      "coal",
+      "gas",
+      "oil",
+      "nuclear",
+      "other_renewable",
+      "hydro",
+      "wind",
+      "solar"
+     ],
+     "labels": {
+      "coal": "Coal",
+      "gas": "Gas",
+      "oil": "Oil",
+      "nuclear": "Nuclear",
+      "other_renewable": "Other renewables",
+      "hydro": "Hydro",
+      "wind": "Wind",
+      "solar": "Solar"
+     },
+     "colors": {
+      "coal": "#4b4f57",
+      "gas": "#6e6a63",
+      "oil": "#8a8378",
+      "nuclear": "#9085e9",
+      "other_renewable": "#3f9a45",
+      "hydro": "#3987e5",
+      "wind": "#1ba39a",
+      "solar": "#c98500"
+     },
+     "format": ",.0f",
+     "defaults": {
+      "title": "How the world makes electricity",
+      "subtitle": "Generation by source, TWh, 2000–2024"
+     }
     },
-    {
-      "id": "c",
-      "charts": {
-        "swarm": { "type": "beeswarm", "data": "c24", "x": "solar_wind_share", "size": "generation_twh", "id": "country", "where": { "generation_twh": { "gt": 50 } },
-          "xFormat": { "format": ".1f", "suffix": "%" }, "xLabel": "Solar + wind share", "tooltip": ["fossil_share", "carbon_intensity_gco2_kwh", "generation_twh"], "color": "#1ba39a", "legend": "Countries > 50 TWh", "colorFormat": ",.0f",
-          "defaults": { "title": "Share of electricity from solar + wind, 2024", "subtitle": "Countries generating > 50 TWh · circle area = total generation" } }
-      },
-      "steps": [
-        { "heading": "The leaderboard nobody expects.", "text": "Every country generating more than 50 TWh a year, placed by how much of its electricity comes from solar and wind. Bigger circle, bigger grid.", "state": {} },
-        { "heading": "The sunniest places don't lead.", "text": "The <strong>Netherlands (45%)</strong>, <strong>Germany (43%)</strong>, Spain, Greece, Chile and the UK top the list — a story of policy and grids more than sunshine.",
-          "state": { "labels": ["Netherlands", "Germany", "Spain", "Greece", "Chile", "United Kingdom", "Belgium", "Australia"] } },
-        { "heading": "And solar + wind isn't the same as clean.", "text": "Recolour by carbon intensity: Norway, Sweden and France run near-zero-carbon grids on hydro and nuclear with little solar or wind. Uzbekistan, Kazakhstan, South Africa and India sit above 700 gCO₂/kWh.",
-          "state": { "title": "Solar + wind share vs. grid carbon intensity, 2024", "subtitle": "Colour = gCO₂ per kWh (brighter = dirtier)", "colorBy": "carbon_intensity_gco2_kwh", "colorDomain": [0, 900], "colorLabel": "gCO₂/kWh", "labels": ["Norway", "Sweden", "France", "Switzerland", "Uzbekistan", "Kazakhstan", "South Africa", "India", "Netherlands", "Germany"] } }
-      ]
-    },
-    {
-      "id": "d",
-      "charts": {
-        "map": { "type": "map", "data": "panel", "id": "iso_code", "name": "country", "value": "carbon_intensity_gco2_kwh", "year": "year", "domain": [0, 900], "unit": "gCO₂/kWh", "format": ",.0f", "valueLabel": "Carbon intensity", "tooltip": ["fossil_share", "solar_wind_share"],
-          "defaults": { "title": "Carbon intensity of electricity", "subtitle": "Grams of CO₂ per kilowatt-hour generated · grey hatch = no data" } }
-      },
-      "steps": [
-        { "tall": true, "heading": "Watch the world's grids, year by year.", "text": "Carbon intensity of electricity, 2000 → 2024. Brighter means dirtier. Keep scrolling to move through time.", "state": { "scrub": [2000, 2024] } },
-        { "heading": "2024: two worlds.", "text": "Grid carbon has fallen across most rich countries. It has risen — or stayed stubbornly high — where demand is growing fastest. Hover a country to see its number.", "state": { "year": 2024 } }
-      ]
+    "growth": {
+     "type": "bar",
+     "format": {
+      "format": ",.0f",
+      "prefix": "+",
+      "suffix": " TWh"
+     },
+     "valueLabel": "Added 2000→2024",
+     "defaults": {
+      "title": "Electricity added since 2000, by source",
+      "subtitle": "TWh, 2000 → 2024"
+     }
     }
-  ],
-  "footerTitle": "Method & sources",
-  "footerHtml": "<p>All figures are electricity generation in terawatt-hours (TWh) or shares of generation, computed from the <a href=\"https://github.com/owid/energy-data\" target=\"_blank\" rel=\"noopener\">Our World in Data energy dataset</a> (Ember, Energy Institute), CC BY 4.0. Countries with no reported value are shown in grey, never as zero. Map boundaries: Natural Earth.</p>"
+   },
+   "steps": [
+    {
+     "show": "hero",
+     "heading": "In 2000, solar was a rounding error.",
+     "text": "The entire planet's solar panels produced <strong>1 terawatt-hour</strong> of electricity that year — about 0.007% of the world's power.",
+     "state": {
+      "value": {
+       "data": "world",
+       "where": {
+        "year": 2000
+       },
+       "column": "solar"
+      },
+      "max": {
+       "data": "world",
+       "where": {
+        "year": 2024
+       },
+       "column": "wind"
+      },
+      "label": "TWh of solar electricity, 2000",
+      "from": 0
+     }
+    },
+    {
+     "show": "hero",
+     "heading": "Then it grew two-thousand-fold.",
+     "text": "By 2024 solar produced <strong>2,143 TWh</strong>. Nothing else in the energy system has ever scaled this fast.",
+     "state": {
+      "value": {
+       "data": "world",
+       "where": {
+        "year": 2024
+       },
+       "column": "solar"
+      },
+      "max": {
+       "data": "world",
+       "where": {
+        "year": 2024
+       },
+       "column": "wind"
+      },
+      "label": "TWh of solar electricity, 2024"
+     }
+    },
+    {
+     "show": "hero",
+     "heading": "Wind did almost the same.",
+     "text": "Wind went from 31 TWh to <strong>2,510 TWh</strong>. Together, solar and wind now supply <strong>15% of the world's electricity</strong>.",
+     "state": {
+      "value": {
+       "data": "world",
+       "where": {
+        "year": 2024
+       },
+       "column": "wind"
+      },
+      "max": {
+       "data": "world",
+       "where": {
+        "year": 2024
+       },
+       "column": "wind"
+      },
+      "label": "TWh of wind electricity, 2024",
+      "sublabel": ""
+     }
+    },
+    {
+     "show": "mix",
+     "heading": "Here is how the world made electricity in 2000…",
+     "text": "Coal, gas and oil produced almost two-thirds of the world's 15,279 TWh.",
+     "state": {
+      "visible": [
+       "coal",
+       "gas",
+       "oil"
+      ]
+     }
+    },
+    {
+     "show": "mix",
+     "heading": "…plus the old low-carbon workhorses.",
+     "text": "Hydro and nuclear have been around for decades — and have barely grown since 2000.",
+     "state": {
+      "visible": [
+       "coal",
+       "gas",
+       "oil",
+       "nuclear",
+       "other_renewable",
+       "hydro"
+      ]
+     }
+    },
+    {
+     "show": "mix",
+     "heading": "And then solar and wind arrive.",
+     "text": "Nearly invisible until 2010, they now form a fast-thickening layer on top of the world's power supply.",
+     "state": {
+      "highlight": [
+       "wind",
+       "solar"
+      ]
+     }
+    },
+    {
+     "show": "mix",
+     "heading": "Two milestones.",
+     "text": "Solar + wind overtook <strong>nuclear in 2021</strong> and, for the first time ever, <strong>hydro in 2024</strong>.",
+     "state": {
+      "highlight": [
+       "wind",
+       "solar"
+      ],
+      "annotations": [
+       {
+        "x": 2021,
+        "xRule": true,
+        "text": "2021: solar + wind overtake nuclear",
+        "anchor": "end",
+        "level": 1
+       },
+       {
+        "x": 2024,
+        "xRule": true,
+        "text": "2024: overtake hydro",
+        "anchor": "end"
+       }
+      ]
+     }
+    },
+    {
+     "show": "mix",
+     "heading": "But look at the shares.",
+     "text": "Re-scale the same chart to 100% and the picture changes: fossil fuels still make <strong>59% of the world's electricity</strong>.",
+     "state": {
+      "normalize": true,
+      "subtitle": "Share of generation by source, 2000–2024"
+     }
+    },
+    {
+     "show": "mix",
+     "heading": "64.7% → 59.1%. That's it.",
+     "text": "Twenty-four years of the fastest energy build-out in history moved fossil fuels' share of electricity down by less than six points. Coal generation is at an <strong>all-time high</strong>.",
+     "state": {
+      "normalize": true,
+      "subtitle": "Share of generation by source, 2000–2024",
+      "annotations": [
+       {
+        "stackTop": "oil",
+        "x": 2000,
+        "text": "Fossil {value}",
+        "anchor": "start",
+        "dy": -10
+       },
+       {
+        "stackTop": "oil",
+        "x": 2024,
+        "text": "{value}",
+        "anchor": "end",
+        "dy": -10
+       }
+      ]
+     }
+    },
+    {
+     "show": "growth",
+     "heading": "Why? Because demand doubled.",
+     "text": "The world added 15,651 TWh since 2000 in three roughly equal chunks. Solar and wind <strong>matched</strong> coal's growth — they didn't <strong>replace</strong> it.",
+     "state": {
+      "values": [
+       {
+        "category": "Coal",
+        "color": "#4b4f57",
+        "value": {
+         "op": "sub",
+         "args": [
+          {
+           "data": "world",
+           "where": {
+            "year": 2024
+           },
+           "column": "coal"
+          },
+          {
+           "data": "world",
+           "where": {
+            "year": 2000
+           },
+           "column": "coal"
+          }
+         ]
+        }
+       },
+       {
+        "category": "Solar + wind",
+        "color": "#c98500",
+        "value": {
+         "op": "sub",
+         "args": [
+          {
+           "data": "world",
+           "where": {
+            "year": 2024
+           },
+           "columns": [
+            "solar",
+            "wind"
+           ]
+          },
+          {
+           "data": "world",
+           "where": {
+            "year": 2000
+           },
+           "columns": [
+            "solar",
+            "wind"
+           ]
+          }
+         ]
+        }
+       },
+       {
+        "category": "Gas",
+        "color": "#6e6a63",
+        "value": {
+         "op": "sub",
+         "args": [
+          {
+           "data": "world",
+           "where": {
+            "year": 2024
+           },
+           "column": "gas"
+          },
+          {
+           "data": "world",
+           "where": {
+            "year": 2000
+           },
+           "column": "gas"
+          }
+         ]
+        }
+       },
+       {
+        "category": "All other sources",
+        "color": "#5a6070",
+        "value": {
+         "op": "sub",
+         "args": [
+          {
+           "data": "world",
+           "where": {
+            "year": 2024
+           },
+           "columns": [
+            "oil",
+            "nuclear",
+            "hydro",
+            "other_renewable"
+           ]
+          },
+          {
+           "data": "world",
+           "where": {
+            "year": 2000
+           },
+           "columns": [
+            "oil",
+            "nuclear",
+            "hydro",
+            "other_renewable"
+           ]
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "b",
+   "charts": {
+    "sm": {
+     "type": "line",
+     "data": "big",
+     "x": "year",
+     "ys": [
+      "coal_twh",
+      "wind_twh",
+      "solar_twh"
+     ],
+     "facet": "country",
+     "facets": [
+      "China",
+      "United States",
+      "European Union (27)",
+      "India"
+     ],
+     "labels": {
+      "coal_twh": "Coal",
+      "wind_twh": "Wind",
+      "solar_twh": "Solar",
+      "European Union (27)": "European Union"
+     },
+     "colors": {
+      "coal_twh": "#8a8378",
+      "wind_twh": "#1ba39a",
+      "solar_twh": "#c98500"
+     },
+     "format": {
+      "format": ",.0f",
+      "suffix": " TWh"
+     },
+     "defaults": {
+      "title": "Solar, wind and coal generation",
+      "subtitle": "TWh per year, 2000–2024 · same scale in every panel"
+     }
+    }
+   },
+   "steps": [
+    {
+     "heading": "Who is building it?",
+     "text": "The four largest electricity systems, on the same scale. Amber is solar, teal is wind, grey is coal.",
+     "state": {}
+    },
+    {
+     "heading": "China: both records at once.",
+     "text": "China produced <strong>839 TWh of solar</strong> in 2024 — 39% of the world's total — while burning <strong>5,828 TWh of coal</strong>, more than the rest of the world combined.",
+     "state": {
+      "focus": "China",
+      "annotations": [
+       {
+        "facet": "China",
+        "series": "coal_twh",
+        "x": 2024,
+        "text": "Coal {value}",
+        "anchor": "end",
+        "dx": -8,
+        "dy": -10
+       },
+       {
+        "facet": "China",
+        "series": "solar_twh",
+        "x": 2024,
+        "text": "Solar {value}",
+        "anchor": "end",
+        "dx": -8,
+        "dy": -8
+       }
+      ]
+     }
+    },
+    {
+     "heading": "Europe: the only one that shrank coal.",
+     "text": "The EU's coal generation has fallen to 271 TWh, and fossil fuels now make just <strong>28.6%</strong> of its electricity.",
+     "state": {
+      "focus": "European Union (27)",
+      "annotations": [
+       {
+        "facet": "European Union (27)",
+        "series": "coal_twh",
+        "x": 2024,
+        "text": "Coal {value}",
+        "anchor": "end",
+        "dx": -8,
+        "dy": -26
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "c",
+   "charts": {
+    "swarm": {
+     "type": "beeswarm",
+     "data": "c24",
+     "x": "solar_wind_share",
+     "size": "generation_twh",
+     "id": "country",
+     "where": {
+      "generation_twh": {
+       "gt": 50
+      }
+     },
+     "xFormat": {
+      "format": ".1f",
+      "suffix": "%"
+     },
+     "xLabel": "Solar + wind share",
+     "tooltip": [
+      "fossil_share",
+      "carbon_intensity_gco2_kwh",
+      "generation_twh"
+     ],
+     "color": "#1ba39a",
+     "legend": "Countries > 50 TWh",
+     "colorFormat": ",.0f",
+     "defaults": {
+      "title": "Share of electricity from solar + wind, 2024",
+      "subtitle": "Countries generating > 50 TWh · circle area = total generation"
+     }
+    }
+   },
+   "steps": [
+    {
+     "heading": "The leaderboard nobody expects.",
+     "text": "Every country generating more than 50 TWh a year, placed by how much of its electricity comes from solar and wind. Bigger circle, bigger grid.",
+     "state": {}
+    },
+    {
+     "heading": "The sunniest places don't lead.",
+     "text": "The <strong>Netherlands (45%)</strong>, <strong>Germany (43%)</strong>, Spain, Greece, Chile and the UK top the list — a story of policy and grids more than sunshine.",
+     "state": {
+      "labels": [
+       "Netherlands",
+       "Germany",
+       "Spain",
+       "Greece",
+       "Chile",
+       "United Kingdom",
+       "Belgium",
+       "Australia"
+      ]
+     }
+    },
+    {
+     "heading": "And solar + wind isn't the same as clean.",
+     "text": "Recolour by carbon intensity: Norway, Sweden and France run near-zero-carbon grids on hydro and nuclear with little solar or wind. Uzbekistan, Kazakhstan, South Africa and India sit above 700 gCO₂/kWh.",
+     "state": {
+      "title": "Solar + wind share vs. grid carbon intensity, 2024",
+      "subtitle": "Colour = gCO₂ per kWh (brighter = dirtier)",
+      "colorBy": "carbon_intensity_gco2_kwh",
+      "colorDomain": [
+       0,
+       900
+      ],
+      "colorLabel": "gCO₂/kWh",
+      "labels": [
+       "Norway",
+       "Sweden",
+       "France",
+       "Switzerland",
+       "Uzbekistan",
+       "Kazakhstan",
+       "South Africa",
+       "India",
+       "Netherlands",
+       "Germany"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "d",
+   "charts": {
+    "map": {
+     "type": "map",
+     "data": "panel",
+     "id": "iso_code",
+     "name": "country",
+     "value": "carbon_intensity_gco2_kwh",
+     "year": "year",
+     "domain": [
+      0,
+      900
+     ],
+     "unit": "gCO₂/kWh",
+     "format": ",.0f",
+     "valueLabel": "Carbon intensity",
+     "tooltip": [
+      "fossil_share",
+      "solar_wind_share"
+     ],
+     "defaults": {
+      "title": "Carbon intensity of electricity",
+      "subtitle": "Grams of CO₂ per kilowatt-hour generated · grey hatch = no data"
+     }
+    }
+   },
+   "steps": [
+    {
+     "tall": true,
+     "heading": "Watch the world's grids, year by year.",
+     "text": "Carbon intensity of electricity, 2000 → 2024. Brighter means dirtier. Keep scrolling to move through time.",
+     "state": {
+      "scrub": [
+       2000,
+       2024
+      ]
+     }
+    },
+    {
+     "heading": "2024: two worlds.",
+     "text": "Grid carbon has fallen across most rich countries. It has risen — or stayed stubbornly high — where demand is growing fastest. Hover a country to see its number.",
+     "state": {
+      "year": 2024
+     }
+    }
+   ]
+  }
+ ],
+ "footerTitle": "Method & sources",
+ "footerHtml": "<p>All figures are electricity generation in terawatt-hours (TWh) or shares of generation, computed from the <a href=\"https://github.com/owid/energy-data\" target=\"_blank\" rel=\"noopener\">Our World in Data energy dataset</a> (Ember, Energy Institute), CC BY 4.0. Countries with no reported value are shown in grey, never as zero. Map boundaries: Natural Earth.</p>",
+ "themeSwitcher": true
 }
