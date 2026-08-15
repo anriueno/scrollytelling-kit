@@ -62,6 +62,18 @@ async function main() {
   }
   scenes.forEach((s) => renderStep(s, 0, true));
 
+  // ---- deterministic step control (QA, deep links, background tabs where IntersectionObserver won't fire) ----
+  // URL: ?step=<sceneId>:<index>  ·  JS: window.scrolly.goto("a", 3), window.scrolly.list()
+  const goto = (sceneId, index, scroll = true) => {
+    const scene = scenes.find((s) => s.id === String(sceneId)); if (!scene) return false;
+    const steps = document.querySelectorAll(`#scrolly-${scene.id} .step`); const i = Math.max(0, Math.min(steps.length - 1, +index || 0));
+    steps.forEach((s) => s.classList.remove("is-active")); steps[i].classList.add("is-active"); renderStep(scene, i, false);
+    if (scroll) { const r = steps[i].getBoundingClientRect(); window.scrollTo({ top: r.top + window.scrollY - window.innerHeight * (window.innerWidth < 900 ? 0.7 : 0.55) + 30, behavior: "instant" }); }
+    return true;
+  };
+  window.scrolly = { goto, list: () => scenes.map((s) => ({ scene: s.id, steps: s.sc.steps.length, charts: Object.keys(s.charts) })), scenes };
+  if (q.get("step")) { const [sid, idx] = q.get("step").split(":"); setTimeout(() => goto(sid, idx), 300); }
+
   // ---- inline text editing: on in `npm run dev` (⌘S rewrites public/story.json) or when "editor": true in story.json (downloads story.json). Off on published sites by default. ----
   if (import.meta.env.DEV ? story.editor !== false : story.editor === true) initEditor(story, { start: q.get("edit") === "1" });
 

@@ -1,6 +1,6 @@
 # Visual QA checklist (do this in a real browser before calling it done)
 
-Run `npm run dev`, open the URL, and for **every step**:
+Run `npm run dev`, open the URL, and for **every step** (jump with `?step=<scene>:<index>` or `window.scrolly.goto(scene, index)` — deterministic, works even when the tab is in the background; `window.scrolly.list()` enumerates them):
 1. Scroll to it and screenshot. Read the chart as a stranger: is the step's claim visible without the text?
 2. Check labels/annotations for collisions and clipping (right margin, top legend, y-axis label).
 3. Hover: tooltip appears with the right values.

@@ -13,7 +13,7 @@ description: >-
   export. Invoke with an optional path to the data file.
 license: MIT
 metadata:
-  version: "0.3.1"
+  version: "0.3.2"
   author: anriueno
 ---
 
@@ -30,8 +30,8 @@ Kit layout (this skill's directory):
 
 ## Process (follow in order — do not skip to building)
 
-### 1. Intake — ask everything at once
-Ask these together in one message (use the structured-question UI if the environment has one; otherwise numbered options), then wait:
+### 1. Intake — ask everything at once, then STOP and wait
+**Do not profile, scaffold or build until the user has answered.** Even if a CSV is already in the folder, and even if the request seems clear, ask these together in one message (use the structured-question UI if the environment has one; otherwise numbered options) and wait for the reply. The only exception is the user explicitly saying "just build it, don't ask":
 1. **Data** — which file(s)? (CSV; Excel → export or convert with python.) If none yet: offer to find a public dataset for the topic.
 2. **Story status** — "I know the story I want to tell" / "Find the story for me" / "Somewhere in between".
 3. **Audience & use** — Reading (article/report shared by link) / Presenting (you'll scroll it live while talking) / Both. → density: reading = default; presenting = `"density": "presentation"` (bigger type, fewer words, fewer steps).
@@ -52,8 +52,8 @@ Do **not** invent context numbers. Everything on the page must come from the fil
 - `bash scripts/new_story.sh <project-dir> <raw csvs>` · `cd <project-dir> && npm install`.
 - Cut **small, tidy CSVs** into `public/data/` with python: one file per chart need. Long form for panels (`entity, code, year, value…`), wide for stacked areas (`year, seriesA, seriesB…`). Blank = missing (never 0). Each file well under 1 MB. Maps need an ISO3 column.
 
-### 5. Style discovery — show, don't tell
-Write a first `public/story.json` (hero + first scene is enough), start `npm run dev`, then open the same URL three ways and screenshot each: `?theme=dark`, `?theme=paper`, `?theme=bold` (add `&density=presentation` if they are presenting; add `&font=<id>` to vary type — pick pairings that fit the tone, e.g. `newsreader` for editorial, `bebas` or `archivo` for bold, `plexmono` for technical). Show the user the three screenshots (or the three URLs) and ask which direction they prefer — or "mix" (e.g. paper + a different accent or font). Set `theme.preset` / `theme.accent` / `theme.font` accordingly. Do not ask the user to describe colours or fonts in words first; people react to renders. If the user named a look up front, honour it and skip this.
+### 5. Style discovery — show, don't tell (mandatory unless the user named a look)
+**Do not write the full story.json before this step.** Write a first `public/story.json` (hero + first scene is enough), start `npm run dev`, then open the same URL three ways and screenshot each: `?theme=dark`, `?theme=paper`, `?theme=bold` (add `&density=presentation` if they are presenting; add `&font=<id>` to vary type — pick pairings that fit the tone, e.g. `newsreader` for editorial, `bebas` or `archivo` for bold, `plexmono` for technical). Show the user the three screenshots (or the three URLs) and ask which direction they prefer — or "mix" (e.g. paper + a different accent or font). Set `theme.preset` / `theme.accent` / `theme.font` accordingly. Do not ask the user to describe colours or fonts in words first; people react to renders. If the user named a look up front, honour it and skip this.
 
 ### 6. Write `public/story.json`
 - Read `reference/story-schema.md`. Start from the closest example only.
@@ -63,7 +63,7 @@ Write a first `public/story.json` (hero + first scene is enough), start `npm run
 - Run `python3 scripts/validate_story.py <project-dir>` and fix all errors.
 
 ### 7. Look at it, step by step
-`npm run dev`, open the URL in a browser you can control (Claude in Chrome / chrome-devtools MCP if available; otherwise ask the user to open it and describe/screenshot). Follow `reference/qa-checklist.md`: every step, scroll-back test, ~400 px width, console clean, `npm run build`. Fix collisions with `listLabels`, `dx/dy`, `zoom`, `legend:false`, `yShared:false`, fewer labels, shorter text. Fix narrative problems by editing copy — never by fudging data.
+`npm run dev`, open the URL in a browser you can control (Claude in Chrome / chrome-devtools MCP if available; otherwise ask the user to open it and describe/screenshot). **Jump to steps deterministically** instead of relying on scroll triggers (they don't fire in a background tab): open `http://localhost:5173/?step=a:3` (scene id : step index) or run `window.scrolly.goto("a", 3)` in the page, wait ~1.5 s for transitions, screenshot; `window.scrolly.list()` shows all scenes/steps. Follow `reference/qa-checklist.md`: every step, scroll-back test (real scrolling, tab in the foreground), ~400 px width, console clean, `npm run build`. If browser control isn't available, run `node scripts/export_steps.mjs http://localhost:5173 qa` and read the PNGs. Fix collisions with `listLabels`, `dx/dy`, `zoom`, `legend:false`, `yShared:false`, fewer labels, shorter text. Fix narrative problems by editing copy — never by fudging data.
 
 ### 8. Deliver, then offer share/export
 Summarise the story in a few lines, list caveats, give run instructions — including that they can **edit any text directly in the page** (press E, click, ⌘/Ctrl+S saves to `story.json` while `npm run dev` is running) and, if `themeSwitcher` is on, switch theme/font from the corner control. Then ask once: deploy to a live URL (`bash scripts/deploy.sh <dir>` → Vercel, free; needs `vercel login`), export a PDF/PNG handout of every step (`node scripts/export_steps.mjs <url> <out>`, needs Playwright), both, or neither. Offer to add a LICENSE (code MIT; data keeps its own licence with attribution in the footer). If the user declines, stop.

@@ -65,3 +65,7 @@ Missing values are hatched, never zero.
 - One idea per step, ≤ 40 words. 6–12 steps per scene; 3–5 scenes.
 - Use `tall: true` + `scrub` for time animation; give the tall step a short instruction ("keep scrolling to move through time").
 - Reserve one accent colour for the protagonist (`accent`) so the reader can always find it.
+
+## Runtime hooks (QA & deep links)
+- `?theme=`, `?font=`, `?density=`, `?accent=` — preview overrides. `?edit=1` — open in edit mode (dev / editor:true).
+- `?step=<sceneId>:<index>` — render and scroll to a specific step on load. `window.scrolly.goto(sceneId, index)` / `window.scrolly.list()` — same from the console or an automation tool.
