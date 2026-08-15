@@ -13,7 +13,7 @@ description: >-
   export. Invoke with an optional path to the data file.
 license: MIT
 metadata:
-  version: "0.3.4"
+  version: "0.3.5"
   author: anriueno
 ---
 
@@ -58,7 +58,7 @@ Do **not** invent context numbers. Everything on the page must come from the fil
 - **Stop and wait for the user to pick.** Then write `STORYBOARD.md` from `reference/storyboard-template.md`: verified facts, scenes (insight → chart type + columns → steps), caveats (units, exclusions, anomalies you found), acceptance checklist. Keep it short; show the scene list in the chat and ask *"OK to build this?"* — **wait for the answer** before scaffolding.
 
 ### 4. Scaffold and cut the data
-- `bash scripts/new_story.sh <project-dir> <raw csvs>` · `cd <project-dir> && npm install`.
+- `bash scripts/new_story.sh <project-dir> <raw csvs>` · `cd <project-dir> && npm install`. The scaffold prints the engine version; if it says a newer one is published, tell the user (one line) and continue — they can update the plugin later.
 - Cut **small, tidy CSVs** into `public/data/` with python: one file per chart need. Long form for panels (`entity, code, year, value…`), wide for stacked areas (`year, seriesA, seriesB…`). Blank = missing (never 0). Each file well under 1 MB. Maps need an ISO3 column.
 
 ### 5. Style discovery — show, don't tell (mandatory unless the user named a look)

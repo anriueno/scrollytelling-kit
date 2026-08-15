@@ -13,6 +13,8 @@ A Claude Code **plugin/skill** that does the storytelling work with you (profile
 /plugin install scrollytelling@scrollytelling-kit
 ```
 
+To update later: `/plugin marketplace update` then reinstall (`/plugin uninstall scrollytelling@scrollytelling-kit` · `/plugin install scrollytelling@scrollytelling-kit`). Existing stories keep their engine copy; upgrade one with `rsync -a <kit>/plugins/scrollytelling/skills/scrollytelling/template/src/ <story>/src/`.
+
 Then, in any project:
 
 ```

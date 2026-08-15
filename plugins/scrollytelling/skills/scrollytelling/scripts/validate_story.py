@@ -143,8 +143,13 @@ def main(root, as_json=False):
                 nomatch = [x for x in ids if x and x not in geo_ids and not str(x).startswith("OWID")]
                 if len(nomatch) > 0.3 * max(1, len(ids)): v.e(f"{ctx}: {len(nomatch)}/{len(ids)} ids in {d}.{spec['id']} don't match GeoJSON ISO3 codes (e.g. {nomatch[:5]})")
                 elif nomatch: v.w(f"{ctx}: {len(nomatch)} ids not on the map (e.g. {nomatch[:5]}) — fine if they are aggregates")
-            for cname, c in (spec.get("colors") or {}).items():
-                if not HEX.match(str(c)): v.e(f"{ctx}: colors.{cname} '{c}' is not a hex colour")
+            colors = spec.get("colors")
+            if t == "map":   # map.colors is a 2-item ramp [low, high]
+                if colors is not None and (not isinstance(colors, list) or len(colors) != 2 or not all(HEX.match(str(c)) for c in colors)): v.e(f"{ctx}: map colors must be [lowHex, highHex]")
+            elif isinstance(colors, dict):
+                for cname, c in colors.items():
+                    if not HEX.match(str(c)): v.e(f"{ctx}: colors.{cname} '{c}' is not a hex colour")
+            elif colors is not None: v.e(f"{ctx}: colors must be an object {{seriesOrCategory: hex}}")
             dflt = spec.get("defaults") or {}
             check_state(v, t, spec, dflt, data, f"{ctx} defaults")
         # ---- steps ----
