@@ -12,7 +12,7 @@ Kit layout (this skill's directory):
 - `reference/story-schema.md` — **read this before writing story.json** (all spec/state options).
 - `reference/storyboard-template.md`, `reference/qa-checklist.md`
 - `scripts/profile_data.py <csv>` — column types, roles, chart suggestions. `scripts/validate_story.py <project>` — checks story.json against the data. `scripts/new_story.sh <dir> [csv…]` — scaffold.
-- `examples/` — finished story.json files (solar-century: number → area/share morph → bars → line facets → beeswarm → map scrub; price-of-a-year: scatter with fit, gap, year scrub, connected paths).
+- `examples/` — finished story.json files (solar-century: number → area/share morph → bars → line facets → beeswarm → map scrub; price-of-a-year: scatter with fit, gap, year scrub, connected paths; superstore: business transactions → aggregated CSVs, bars with negatives, discount-vs-margin scatter).
 
 ## Process (follow in order — do not skip to building)
 

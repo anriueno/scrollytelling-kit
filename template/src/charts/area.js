@@ -25,7 +25,7 @@ export function createArea(container, spec, datasets) {
       layers.enter().append("path").attr("class", "layer").attr("stroke", INK.bg).attr("stroke-width", 1).attr("d", area).attr("opacity", 0)
         .merge(layers).attr("fill", (d, i) => colorFor(spec, d.key, spec.series.indexOf(d.key)))
         .transition().duration(t).attr("d", area).attr("opacity", (d) => (!vis.has(d.key) ? 0 : hi && !hi.has(d.key) ? 0.4 : 1));
-      gx.attr("transform", `translate(0,${M.top + ih})`).transition().duration(t).call(d3.axisBottom(x).ticks(Math.max(4, Math.floor(iw / 90))).tickFormat(fx).tickSize(0).tickPadding(10));
+      gx.attr("transform", `translate(0,${M.top + ih})`).transition().duration(t).call(d3.axisBottom(x).tickValues(spec.xTicks || (spec.xFormat === "d" || !spec.xFormat ? x.ticks(Math.max(4, Math.floor(iw / 90))).filter(Number.isInteger) : x.ticks(Math.max(4, Math.floor(iw / 90))))).tickFormat(fx).tickSize(0).tickPadding(10));
       gy.attr("transform", `translate(${M.left},0)`).transition().duration(t).call(d3.axisLeft(y).ticks(6).tickFormat(share ? pct : (v) => (v >= 1000 ? d3.format(",.0f")(v / 1000) + "k" : d3.format(",.0f")(v))).tickSize(0).tickPadding(8));
       gGrid.attr("transform", `translate(${M.left},0)`).transition().duration(t).call(d3.axisLeft(y).ticks(6).tickSize(-iw).tickFormat("")); gGrid.selectAll(".domain").remove();
       // direct labels

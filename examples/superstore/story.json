@@ -1,0 +1,373 @@
+{
+ "title": "The Discount That Ate the Profit",
+ "kicker": "A data story · one retailer · 9,994 orders · 2015–2018",
+ "subtitle": "Sales grew every year. Profit barely did — and the discounts explain why.",
+ "sourceNote": "Source: the public 'Sample – Superstore' dataset (fictional US retailer). Every number on this page is computed from it.",
+ "theme": {
+  "accent": "#e66767"
+ },
+ "data": {
+  "monthly": "monthly_sales_by_category.csv",
+  "cat": "category_totals.csv",
+  "sub": "subcategory_totals.csv",
+  "bands": "discount_bands.csv",
+  "split": "discount_split.csv",
+  "state": "state_totals.csv",
+  "region": "region_totals.csv",
+  "yearly": "yearly.csv"
+ },
+ "scenes": [
+  {
+   "id": "a",
+   "charts": {
+    "hero": {
+     "type": "number",
+     "format": {
+      "format": "$,.0f"
+     },
+     "defaults": {
+      "dot": false
+     }
+    },
+    "mix": {
+     "type": "area",
+     "data": "monthly",
+     "x": "year_dec",
+     "series": [
+      "Furniture",
+      "Office Supplies",
+      "Technology"
+     ],
+     "colors": {
+      "Furniture": "#d95926",
+      "Office Supplies": "#3987e5",
+      "Technology": "#199e70"
+     },
+     "format": {
+      "format": "$,.0f"
+     },
+     "xFormat": "d",
+     "defaults": {
+      "title": "Monthly sales by category",
+      "subtitle": "US dollars, January 2015 – December 2018"
+     }
+    },
+    "catbar": {
+     "type": "bar",
+     "data": "cat",
+     "category": "category",
+     "value": "profit",
+     "note": "note",
+     "format": {
+      "format": "$,.0f"
+     },
+     "valueLabel": "Profit",
+     "colors": {
+      "Furniture": "#d95926",
+      "Office Supplies": "#3987e5",
+      "Technology": "#199e70"
+     },
+     "defaults": {
+      "title": "Four years of profit, by category",
+      "subtitle": "Total profit 2015–2018 and margin (profit ÷ sales)"
+     }
+    }
+   },
+   "steps": [
+    {
+     "show": "hero",
+     "heading": "Four years, $2.3 million in sales.",
+     "text": "9,994 order lines from a US office-supplies retailer, 2015–2018.",
+     "state": {
+      "value": {
+       "data": "cat",
+       "column": "sales",
+       "agg": "sum"
+      },
+      "label": "total sales, 2015–2018",
+      "from": 0
+     }
+    },
+    {
+     "show": "hero",
+     "heading": "…and $286,000 in profit.",
+     "text": "A <strong>12.5% margin</strong>. Not bad for retail — but look where it comes from.",
+     "state": {
+      "value": {
+       "data": "cat",
+       "column": "profit",
+       "agg": "sum"
+      },
+      "label": "total profit, 2015–2018",
+      "sublabel": "12.5 cents of every sales dollar"
+     }
+    },
+    {
+     "show": "mix",
+     "heading": "Sales grew every year.",
+     "text": "From $484k in 2015 to <strong>$733k in 2018</strong> — up 51%. Three categories of roughly equal size, all growing.",
+     "state": {}
+    },
+    {
+     "show": "mix",
+     "heading": "Roughly a third each.",
+     "text": "Furniture, Office Supplies and Technology each bring in about a third of revenue, month after month.",
+     "state": {
+      "normalize": true,
+      "subtitle": "Share of monthly sales by category"
+     }
+    },
+    {
+     "show": "catbar",
+     "heading": "But not a third of the profit.",
+     "text": "Technology and Office Supplies each earn about 17 cents on the dollar. <strong>Furniture earns 2.5 cents</strong> — $18k of profit on $742k of sales.",
+     "state": {}
+    }
+   ]
+  },
+  {
+   "id": "b",
+   "charts": {
+    "split": {
+     "type": "bar",
+     "data": "split",
+     "category": "group",
+     "value": "profit",
+     "note": "note",
+     "format": {
+      "format": "$,.0f"
+     },
+     "valueLabel": "Profit",
+     "colors": {
+      "Undiscounted orders": "#199e70",
+      "Discounted orders": "#e66767"
+     },
+     "sort": "none",
+     "defaults": {
+      "title": "Where the profit comes from",
+      "subtitle": "Total profit 2015–2018, orders with and without a discount"
+     }
+    },
+    "bands": {
+     "type": "bar",
+     "data": "bands",
+     "category": "band",
+     "value": "profit",
+     "note": "note",
+     "format": {
+      "format": "$,.0f"
+     },
+     "valueLabel": "Profit",
+     "color": "#199e70",
+     "negativeColor": "#e66767",
+     "sort": "none",
+     "defaults": {
+      "title": "Profit by discount level",
+      "subtitle": "Total profit 2015–2018 for each discount band"
+     }
+    },
+    "subs": {
+     "type": "scatter",
+     "data": "sub",
+     "x": "avg_discount_pct",
+     "y": "margin_pct",
+     "size": "sales",
+     "id": "sub_category",
+     "xDomain": [
+      0,
+      40
+     ],
+     "yDomain": [
+      -15,
+      50
+     ],
+     "format": {
+      "x": {
+       "format": ".0f",
+       "suffix": "%"
+      },
+      "y": {
+       "format": ".0f",
+       "suffix": "%"
+      }
+     },
+     "xLabel": "Average discount on the sub-category's orders →",
+     "yLabel": "Profit margin, %",
+     "color": "#3987e5",
+     "legend": "Sub-categories (circle area = sales)",
+     "tooltip": [
+      "category",
+      "sales",
+      "profit"
+     ],
+     "defaults": {
+      "title": "Discount vs. margin, by sub-category",
+      "subtitle": "17 sub-categories · circle area = sales"
+     }
+    }
+   },
+   "steps": [
+    {
+     "show": "split",
+     "heading": "Every dollar of profit came from orders that weren't discounted.",
+     "text": "Undiscounted orders made <strong>$321k</strong>. Discounted orders — more than half of all lines — <strong>lost $35k</strong> in total.",
+     "state": {}
+    },
+    {
+     "show": "bands",
+     "heading": "Small discounts are fine. Big ones aren't.",
+     "text": "10–20% off still earns 12–13%. From <strong>30% off upwards, every band loses money</strong> — 70–80% off loses more than it sells.",
+     "state": {}
+    },
+    {
+     "show": "subs",
+     "heading": "The more a product is discounted, the less it earns.",
+     "text": "Each circle is a sub-category. Paper and Labels are barely discounted and earn 40%+; Tables average 26% off and <strong>lose 8.6%</strong>.",
+     "state": {
+      "fit": "linear",
+      "labels": [
+       "Tables",
+       "Paper",
+       "Labels",
+       "Copiers",
+       "Bookcases",
+       "Machines",
+       "Binders",
+       "Chairs",
+       "Phones"
+      ],
+      "labelValues": false
+     }
+    },
+    {
+     "show": "subs",
+     "heading": "Furniture's problem is Tables.",
+     "text": "Tables: $207k in sales, <strong>−$17.7k profit</strong>, average discount 26%. Bookcases lose too. Chairs and Furnishings carry the category.",
+     "state": {
+      "highlight": [
+       "Tables",
+       "Bookcases",
+       "Chairs",
+       "Furnishings"
+      ],
+      "highlightLabel": "Furniture",
+      "highlightColor": "#d95926",
+      "labels": [
+       "Chairs",
+       "Furnishings",
+       "Bookcases"
+      ],
+      "annotations": [
+       {
+        "id": "Tables",
+        "text": "Tables: 26% avg discount · −8.6% margin · −$17.7k on $207k",
+        "anchor": "end",
+        "dx": -14,
+        "dy": 4
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "c",
+   "charts": {
+    "states": {
+     "type": "bar",
+     "data": "state",
+     "category": "state",
+     "value": "profit",
+     "note": "note",
+     "format": {
+      "format": "$,.0f"
+     },
+     "valueLabel": "Profit",
+     "color": "#3987e5",
+     "negativeColor": "#e66767",
+     "defaults": {
+      "title": "Profit by state",
+      "subtitle": "The five best and five worst, 2015–2018"
+     }
+    },
+    "regions": {
+     "type": "bar",
+     "data": "region",
+     "category": "region",
+     "value": "margin_pct",
+     "note": "order_lines",
+     "format": {
+      "format": ".1f",
+      "suffix": "%"
+     },
+     "valueLabel": "Margin",
+     "color": "#3987e5",
+     "colors": {
+      "Central": "#e66767"
+     },
+     "defaults": {
+      "title": "Profit margin by region",
+      "subtitle": "Profit ÷ sales, 2015–2018 (order lines in brackets)"
+     }
+    },
+    "split": {
+     "type": "bar",
+     "data": "split",
+     "category": "group",
+     "value": "profit",
+     "note": "note",
+     "format": {
+      "format": "$,.0f"
+     },
+     "valueLabel": "Profit",
+     "colors": {
+      "Undiscounted orders": "#199e70",
+      "Discounted orders": "#e66767"
+     },
+     "sort": "none",
+     "defaults": {
+      "title": "Where the profit comes from",
+      "subtitle": "Total profit 2015–2018, orders with and without a discount"
+     }
+    }
+   },
+   "steps": [
+    {
+     "show": "states",
+     "heading": "It also has an address.",
+     "text": "New York and California make the money. <strong>Texas lost $25.7k</strong>, Ohio $17.0k, Pennsylvania $15.6k and Illinois $12.6k — four states in the red.",
+     "state": {
+      "where": {
+       "state": [
+        "New York",
+        "California",
+        "Washington",
+        "Michigan",
+        "Virginia",
+        "Texas",
+        "Pennsylvania",
+        "Ohio",
+        "Illinois",
+        "North Carolina"
+       ]
+      }
+     }
+    },
+    {
+     "show": "regions",
+     "heading": "Central drags.",
+     "text": "West and East earn 14–15%. The Central region — Texas, Illinois — earns <strong>7.9%</strong>.",
+     "state": {}
+    },
+    {
+     "show": "split",
+     "heading": "So what would you change?",
+     "text": "Cap discounts below 30%, fix or drop Tables, and look hard at Texas — the data says that's where the profit went.",
+     "state": {}
+    }
+   ]
+  }
+ ],
+ "footerTitle": "Method & sources",
+ "footerHtml": "<p>Data: the public <em>Sample – Superstore</em> dataset (a fictional US retailer used in Tableau tutorials), copy from github.com/leonism/sample-superstore. That copy contains 806 malformed rows and 799 duplicated Row IDs; both were removed, leaving the canonical 9,994 order lines (2015–2018). Sales and profit are nominal dollars per order line; discount is a fraction of list price; margin = profit ÷ sales. Discount bands: 0%, 10–15%, 20%, 30–45%, 50–60%, 70–80%.</p>"
+}
