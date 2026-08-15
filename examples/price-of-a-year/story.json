@@ -1,0 +1,379 @@
+{
+ "title": "The Price of a Year",
+ "kicker": "A data story · 191 countries · 2000 → 2023",
+ "subtitle": "What countries pay for health — and how long they live.",
+ "sourceNote": "Sources: World Bank / WHO GHED and UN WPP 2024 via Our World in Data. Every number on this page is computed from that data.",
+ "theme": {
+  "accent": "#f08a5d"
+ },
+ "data": {
+  "snap": "snapshot_2022.csv",
+  "panel": "spend_le_panel.csv"
+ },
+ "scenes": [
+  {
+   "id": "a",
+   "charts": {
+    "hero": {
+     "type": "number",
+     "format": {
+      "format": ",.0f",
+      "prefix": "$"
+     },
+     "color": "#d95926",
+     "defaults": {
+      "dot": false
+     }
+    },
+    "sc": {
+     "type": "scatter",
+     "data": "panel",
+     "x": "spend_ppp",
+     "y": "life_exp",
+     "size": "population",
+     "id": "entity",
+     "year": "year",
+     "xLog": true,
+     "xDomain": [
+      30,
+      16000
+     ],
+     "yDomain": [
+      50,
+      88
+     ],
+     "xTicks": [
+      50,
+      100,
+      300,
+      1000,
+      3000,
+      10000
+     ],
+     "format": {
+      "x": {
+       "format": ",.0f",
+       "prefix": "$"
+      },
+      "y": {
+       "format": ".1f"
+      }
+     },
+     "xLabel": "Health spending per person per year (log scale) →",
+     "yLabel": "Life expectancy at birth, years",
+     "accent": {
+      "United States": "#d95926"
+     },
+     "color": "#3987e5",
+     "legend": "Other countries",
+     "tooltip": [
+      "oop_share"
+     ],
+     "defaults": {
+      "title": "Health spending vs. life expectancy",
+      "subtitle": "191 countries, 2022 · circle area = population",
+      "year": 2022
+     },
+     "where": {
+      "entity": {
+       "ne": "World"
+      }
+     }
+    }
+   },
+   "steps": [
+    {
+     "show": "hero",
+     "heading": "One country spends more on health than any other.",
+     "text": "The United States: <strong>$12,586</strong> per person per year (2022, purchasing-power dollars).",
+     "state": {
+      "value": {
+       "data": "snap",
+       "where": {
+        "entity": "United States"
+       },
+       "column": "spend_ppp"
+      },
+      "label": "per person per year on health, United States, 2022",
+      "from": 0
+     }
+    },
+    {
+     "show": "sc",
+     "heading": "Its people live to 78.",
+     "text": "Put money on one axis and years on the other, and here is where the US lands.",
+     "state": {
+      "where": {
+       "entity": "United States"
+      },
+      "labels": [
+       "United States"
+      ]
+     }
+    },
+    {
+     "show": "sc",
+     "heading": "Now add everyone else.",
+     "text": "191 countries. Circle size is population. From Somalia at $38 a head to Switzerland at $10,575.",
+     "state": {
+      "labels": [
+       "United States",
+       "Somalia",
+       "Switzerland",
+       "Japan",
+       "Nigeria",
+       "India",
+       "China"
+      ],
+      "labelValues": false
+     }
+    },
+    {
+     "show": "sc",
+     "heading": "Money buys years — up to a point.",
+     "text": "Life expectancy tracks the <em>logarithm</em> of spending: each <strong>doubling</strong> adds about <strong>three years</strong>.",
+     "state": {
+      "fit": "log",
+      "fitLabel": "Each doubling of spending ≈ +{perDoubling} years",
+      "fitLabelAt": 400,
+      "labels": [
+       "United States",
+       "Japan",
+       "Somalia"
+      ],
+      "labelValues": false
+     }
+    },
+    {
+     "show": "sc",
+     "heading": "The biggest spender sits six years below its own curve.",
+     "text": "For what the US pays, the curve predicts about 84. The actual figure is 78.",
+     "state": {
+      "fit": "log",
+      "dim": true,
+      "labels": [
+       "United States"
+      ],
+      "labelValues": false,
+      "annotations": [
+       {
+        "gapToFit": "United States",
+        "text": "{gap} years vs. curve"
+       },
+       {
+        "fitAt": 12586,
+        "text": "curve predicts {y}",
+        "anchor": "end",
+        "dx": -12
+       }
+      ]
+     }
+    },
+    {
+     "show": "sc",
+     "heading": "Fifteen countries live as long for a third of the price.",
+     "text": "Israel, Chile, Greece, Costa Rica, the Maldives, China — even Lebanon at $697.",
+     "state": {
+      "fit": "log",
+      "highlight": {
+       "where": {
+        "life_exp": {
+         "gte": 77.9
+        },
+        "spend_ppp": {
+         "lt": 4195
+        }
+       }
+      },
+      "highlightLabel": "Live ≥ 78 yrs for < $4,195",
+      "labels": "highlight",
+      "listLabels": true
+     }
+    },
+    {
+     "show": "sc",
+     "tall": true,
+     "heading": "Twenty-three years of running.",
+     "text": "Keep scrolling to move from 2000 to 2023 — and watch the orange dot.",
+     "state": {
+      "scrub": [
+       2000,
+       2023
+      ],
+      "subtitle": "All countries, year by year",
+      "zoom": {
+       "xDomain": [
+        5,
+        16000
+       ],
+       "yDomain": [
+        30,
+        88
+       ]
+      }
+     }
+    },
+    {
+     "show": "sc",
+     "heading": "Some countries climbed. One mostly ran sideways.",
+     "text": "Each line is a country's path 2000 → 2023. South Korea went from $718 to $4,798 and gained <strong>8.1 years</strong>.",
+     "state": {
+      "title": "Paths through spending and lifespan, 2000 → 2023",
+      "subtitle": "Selected countries",
+      "paths": [
+       "United States",
+       "South Korea",
+       "Japan",
+       "Costa Rica",
+       "France",
+       "United Kingdom",
+       "Switzerland"
+      ],
+      "focusPath": "South Korea",
+      "pathsLabel": "Other peers",
+      "zoom": {
+       "xDomain": [
+        400,
+        16000
+       ],
+       "yDomain": [
+        74,
+        87
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "b",
+   "charts": {
+    "oop": {
+     "type": "beeswarm",
+     "data": "snap",
+     "x": "oop_share",
+     "size": "population",
+     "id": "entity",
+     "where": {
+      "population": {
+       "gt": 1000000
+      }
+     },
+     "xDomain": [
+      0,
+      80
+     ],
+     "xFormat": {
+      "format": ".1f",
+      "suffix": "%"
+     },
+     "xLabel": "Out of pocket",
+     "accent": {
+      "United States": "#d95926"
+     },
+     "color": "#3987e5",
+     "legend": "Other countries",
+     "tooltip": [
+      "spend_ppp",
+      "life_exp"
+     ],
+     "colorFormat": {
+      "format": ",.0f",
+      "prefix": "$"
+     },
+     "defaults": {
+      "title": "Share of health spending paid out of pocket, 2022",
+      "subtitle": "What households pay directly · circle area = population"
+     }
+    }
+   },
+   "steps": [
+    {
+     "heading": "Who actually pays?",
+     "text": "The share of health spending households pay directly, out of pocket.",
+     "state": {}
+    },
+    {
+     "heading": "Ten percent, or eighty.",
+     "text": "US, France, Japan ≈ <strong>10%</strong>. India 45%. Nigeria and Bangladesh <strong>over 75%</strong>.",
+     "state": {
+      "labels": [
+       "United States",
+       "France",
+       "Japan",
+       "United Kingdom",
+       "India",
+       "Nigeria",
+       "Bangladesh",
+       "China",
+       "Brazil"
+      ]
+     }
+    },
+    {
+     "heading": "Poor countries pay twice.",
+     "text": "Colour by spending per person: the countries that spend least are the ones where families shoulder most of the bill.",
+     "state": {
+      "colorBy": "spend_ppp",
+      "colorDomain": [
+       50,
+       8000
+      ],
+      "colorLabel": "per person",
+      "labels": [
+       "United States",
+       "India",
+       "Nigeria",
+       "Bangladesh"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "c",
+   "charts": {
+    "doc": {
+     "type": "bar",
+     "data": "snap",
+     "category": "entity",
+     "value": "physicians_per_1000",
+     "note": "physicians_year",
+     "format": ".2f",
+     "valueLabel": "Physicians per 1,000",
+     "colors": {
+      "United States": "#d95926"
+     },
+     "where": {
+      "entity": [
+       "Cuba",
+       "Norway",
+       "Germany",
+       "United States",
+       "China",
+       "Costa Rica",
+       "Japan",
+       "India",
+       "Nigeria",
+       "Ethiopia",
+       "Chad"
+      ]
+     },
+     "defaults": {
+      "title": "Physicians per 1,000 people",
+      "subtitle": "Selected countries · latest year available (2015–2023)"
+     }
+    }
+   },
+   "steps": [
+    {
+     "heading": "Money isn't the same as capacity.",
+     "text": "Cuba has <strong>9.5</strong> doctors per 1,000; the US 3.7; Nigeria 0.4; Chad 0.09.",
+     "state": {}
+    }
+   ]
+  }
+ ],
+ "footerTitle": "Method & sources",
+ "footerHtml": "<p>Spending is current health expenditure per capita, PPP (WHO GHED via World Bank); life expectancy from UN WPP 2024; via Our World in Data, CC BY 4.0. The fitted curve is an OLS fit of life expectancy on ln(spending), computed in the browser on 2022 data. The Central African Republic is excluded (implausible UN values). Missing values are shown as missing.</p>"
+}
