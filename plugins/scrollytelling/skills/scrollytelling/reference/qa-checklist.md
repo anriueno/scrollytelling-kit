@@ -10,3 +10,5 @@ Then:
 6. Console: zero errors.
 7. `npm run build` succeeds; `dist/` is small (< 2 MB); only the cut CSVs are shipped (raw downloads live in `data/raw/`, not `public/`).
 8. Numbers in the copy match the data (grep the CSV for each headline figure).
+9. Authenticity scan: search the rendered text for "step", "scene", "placeholder", "TODO", "option", "draft", "lorem" — none should appear on the page.
+10. Try the two other themes (`?theme=paper`, `?theme=bold`) once: nothing should become unreadable (theme-agnostic colours come from CSS variables; only story-specific series colours are fixed).

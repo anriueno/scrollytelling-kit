@@ -27,11 +27,16 @@ ln -s "$(pwd)/scrollytelling-kit/plugins/scrollytelling/skills/scrollytelling" ~
 ```
 
 ## What happens when you run it
-1. **Profile** — column types, shape (long / wide / transactions), suggested charts (`scripts/profile_data.py`).
-2. **Find the story** — computes candidate facts (never invents numbers), proposes 2–3 angles with a twist, you pick.
-3. **Storyboard** — verified facts, scenes, chart per scene, caveats, acceptance checklist.
-4. **Build** — scaffolds a Vite project from `template/`, cuts small tidy CSVs, writes `public/story.json`, validates it (`scripts/validate_story.py`).
-5. **QA** — runs the page and checks every step in a browser (collisions, scroll-back, mobile, console), then `npm run build` → deploy to Netlify/Vercel/GitHub Pages.
+1. **Intake** — one message of questions: data, "do you know the story?", reading vs presenting, length, tone.
+2. **Profile** — column types, shape (long / wide / transactions), suggested charts (`scripts/profile_data.py`).
+3. **Find the story** — computes candidate facts (never invents numbers), proposes 2–3 angles with a twist, you pick.
+4. **Storyboard** — verified facts, scenes, chart per scene, caveats, acceptance checklist.
+5. **Style discovery — show, don't tell** — the first scene rendered three ways (`?theme=dark`, `?theme=paper`, `?theme=bold`); you pick by looking, not by describing colours.
+6. **Build** — scaffolds a Vite project from `template/`, cuts small tidy CSVs, writes `public/story.json`, validates it (`scripts/validate_story.py`).
+7. **QA** — runs the page and checks every step in a browser (collisions, scroll-back, mobile, console), then `npm run build`.
+8. **Share** — `scripts/deploy.sh` (Vercel, free) and `scripts/export_steps.mjs` (PNG per step + PDF handout).
+
+**Themes:** `dark` editorial (default) · `paper` (light, warm) · `bold` (black, big sans, hot accent) — set in `story.json` (`theme.preset`, `theme.accent`) or previewed with `?theme=`. **Density:** `reading` (default) or `presentation` (bigger type, fewer words) for scrolling live while you talk.
 
 ## The engine (`template/`)
 Seven chart primitives, all declarative and step-state driven:
@@ -48,6 +53,9 @@ Seven chart primitives, all declarative and step-state driven:
 
 Full options: `plugins/scrollytelling/skills/scrollytelling/reference/story-schema.md`. Examples: `…/examples/` (energy transition, health spending vs. life expectancy, retail sales & discounts).
 
+## Other coding agents
+The skill is plain markdown + scripts, so Codex, Gemini CLI, OpenCode etc. can use it too: point the agent at `plugins/scrollytelling/skills/scrollytelling/SKILL.md` and let it read only the reference files it needs.
+
 ## Repo layout
 ```
 .claude-plugin/marketplace.json            # marketplace (this repo)
@@ -57,7 +65,7 @@ plugins/scrollytelling/
     SKILL.md                               # the skill (process + rules)
     template/                              # Vite + D3 + Scrollama engine
     reference/                             # story-schema.md · storyboard-template.md · qa-checklist.md
-    scripts/                               # profile_data.py · validate_story.py · new_story.sh
+    scripts/                               # profile_data.py · validate_story.py · new_story.sh · deploy.sh · export_steps.mjs
     examples/                              # solar-century · price-of-a-year · superstore
 ```
 

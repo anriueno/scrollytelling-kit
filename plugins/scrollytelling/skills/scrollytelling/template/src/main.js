@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import scrollama from "scrollama";
-import { deepMerge, num, where } from "./util.js";
+import { deepMerge, num, where, applyTheme } from "./util.js";
 import { createNumber } from "./charts/number.js";
 import { createArea } from "./charts/area.js";
 import { createBar } from "./charts/bar.js";
@@ -16,7 +16,9 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 async function main() {
   const story = await d3.json(`${base}story.json`);
   document.title = story.title;
-  if (story.theme && story.theme.accent) document.documentElement.style.setProperty("--accent", story.theme.accent);
+  // theme: story.theme = { preset: "dark"|"paper"|"bold", accent, density: "reading"|"presentation", palette? }; ?theme= & ?density= URL params override (used for style previews)
+  const q = new URLSearchParams(location.search);
+  applyTheme({ ...(story.theme || {}), ...(q.get("theme") ? { preset: q.get("theme") } : {}), ...(q.get("density") ? { density: q.get("density") } : {}), ...(q.get("accent") ? { accent: "#" + q.get("accent").replace("#", "") } : {}) });
   // datasets
   const datasets = {};
   await Promise.all(Object.entries(story.data || {}).map(async ([k, f]) => { datasets[k] = await d3.csv(`${base}data/${f}`); }));

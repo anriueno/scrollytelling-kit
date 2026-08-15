@@ -2,14 +2,14 @@
   "name": "scrollytelling-kit",
   "description": "Data storytelling tools for Claude Code",
   "owner": { "name": "Anri Ferris", "url": "https://github.com/anriueno" },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "metadata": { "pluginRoot": "./plugins" },
   "plugins": [
     {
       "name": "scrollytelling",
       "displayName": "Scrollytelling",
       "description": "Turn any CSV into a scroll-driven data story — D3 + Scrollama page generated from story.json, with a guided storyboarding workflow.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./plugins/scrollytelling",
       "author": { "name": "Anri Ferris", "url": "https://github.com/anriueno" },
       "category": "data",

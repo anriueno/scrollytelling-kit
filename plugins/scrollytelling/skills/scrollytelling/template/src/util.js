@@ -1,8 +1,23 @@
 import * as d3 from "d3";
 
-// Validated categorical order for a dark surface (adjacent-pair CVD safe). Users can override per series in story.json.
-export const CATEGORICAL = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"];
-export const INK = { ink: "#f4f1ea", ink2: "#b9b5aa", muted: "#7d7a72", grid: "#232833", bg: "#0f1218", curve: "#f4f1ea", dim: "#4b5563" };
+// Validated categorical orders (adjacent-pair CVD safe) — dark and light surfaces. Users can override per series in story.json.
+const PALETTES = { dark: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"], light: ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"] };
+export const CATEGORICAL = [...PALETTES.dark];
+export const INK = { ink: "#f4f1ea", ink2: "#b9b5aa", muted: "#7d7a72", grid: "#232833", bg: "#0f1218", curve: "#f4f1ea", dim: "#4b5563", seqLow: "#4a3f2c", seqHigh: "#ffb03b" };
+export const THEMES = ["dark", "paper", "bold"];
+/** Apply a theme preset (+ optional overrides) and refresh INK/CATEGORICAL from the computed CSS variables. Call before creating charts. */
+export function applyTheme(theme = {}) {
+  const preset = THEMES.includes(theme.preset) ? theme.preset : "dark";
+  const root = document.documentElement;
+  root.setAttribute("data-theme", preset);
+  if (theme.density === "presentation") root.setAttribute("data-density", "presentation");
+  if (theme.accent) root.style.setProperty("--accent", theme.accent);
+  const cs = getComputedStyle(root); const v = (n) => cs.getPropertyValue(n).trim();
+  Object.assign(INK, { ink: v("--ink"), ink2: v("--ink-2"), muted: v("--muted"), grid: v("--grid"), bg: v("--bg"), curve: v("--ink"), dim: v("--dim"), seqLow: v("--seq-low"), seqHigh: v("--seq-high") });
+  const pal = theme.palette && Array.isArray(theme.palette) ? theme.palette : PALETTES[preset === "paper" ? "light" : "dark"];
+  CATEGORICAL.splice(0, CATEGORICAL.length, ...pal);
+  return preset;
+}
 
 export const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 export const DUR = () => (reducedMotion() ? 0 : 800);

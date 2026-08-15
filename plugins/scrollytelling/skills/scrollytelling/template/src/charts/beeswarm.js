@@ -25,13 +25,13 @@ export function createBeeswarm(container, spec, datasets) {
         for (let i = 0; i < 220; i++) sim.tick(); laidKey = key;
       }
       const cb = state.colorBy; const cvals = cb ? data.map((d) => num(d[cb])).filter((v) => v != null) : [];
-      const cscale = cb ? d3.scaleSequential(d3.interpolateLab("#4a3f2c", "#ffb03b")).domain(state.colorDomain || [d3.min(cvals), d3.max(cvals)]).clamp(true) : null;
+      const cscale = cb ? d3.scaleSequential(d3.interpolateLab(INK.seqLow, INK.seqHigh)).domain(state.colorDomain || [d3.min(cvals), d3.max(cvals)]).clamp(true) : null;
       const accent = spec.accent || {};
       const dots = gDots.selectAll("circle").data(data, (d) => d.id);
       dots.enter().append("circle").attr("cx", (d) => d.x).attr("cy", (d) => d.y).attr("r", 0).attr("stroke", INK.bg).attr("stroke-width", 0.8).merge(dots)
         .on("mousemove", (ev, d) => showTip(`<b>${d.id}</b>` + rowsHtml([[spec.xLabel || spec.x, fx(d.xv)], ...(spec.tooltip || []).map((c) => [c, d[c]])]), ev)).on("mouseleave", hideTip)
         .transition().duration(t).delay((d, i) => (immediate || state.__index !== 0 ? 0 : i * 6)).attr("cx", (d) => d.x).attr("cy", (d) => d.y).attr("r", (d) => d.r)
-        .attr("fill", (d) => accent[d.id] || (cb ? (num(d[cb]) == null ? "#3a3f4a" : cscale(num(d[cb]))) : spec.color || CATEGORICAL[0])).attr("opacity", cb ? 1 : 0.85);
+        .attr("fill", (d) => accent[d.id] || (cb ? (num(d[cb]) == null ? INK.dim : cscale(num(d[cb]))) : spec.color || CATEGORICAL[0])).attr("opacity", cb ? 1 : 0.85);
       dots.exit().remove();
       const swarmTop = d3.min(data, (d) => d.y - d.r), swarmBottom = d3.max(data, (d) => d.y + d.r);
       const ld = data.filter((d) => (state.labels || []).includes(d.id)).sort((a, b) => a.x - b.x); const tiers = [];
