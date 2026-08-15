@@ -28,8 +28,10 @@ export function createLine(container, spec, datasets) {
       const M = { l: 48, r: padR, t: facets.length > 1 ? 26 : 10, b: 24 };
       const allPts = panels.flatMap((p) => p.series.filter((s) => keys.includes(s.key)).flatMap((s) => s.rows));
       const x = d3.scaleLinear().domain(d3.extent(allPts, (d) => d.x)).range([M.l, pw - M.r]);
-      const y = d3.scaleLinear().domain(state.yDomain || spec.yDomain || [Math.min(0, d3.min(allPts, (d) => d.v)), d3.max(allPts, (d) => d.v)]).nice().range([ph - M.b, M.t]);
-      const line = d3.line().x((d) => x(d.x)).y((d) => y(d.v)).curve(d3.curveMonotoneX);
+      const yShared = spec.yShared !== false;
+      const yFor = (pts) => d3.scaleLinear().domain(state.yDomain || spec.yDomain || [Math.min(0, d3.min(pts, (d) => d.v)), d3.max(pts, (d) => d.v)]).nice().range([ph - M.b, M.t]);
+      let y = yFor(allPts);
+      let line = d3.line().x((d) => x(d.x)).y((d) => y(d.v)).curve(d3.curveMonotoneX);
       const P = gPanels.selectAll("g.panel").data(panels, (d) => d.facet);
       const pe = P.enter().append("g").attr("class", "panel");
       pe.append("rect").attr("class", "bg").attr("fill", "transparent"); pe.append("text").attr("class", "label strong ptitle").attr("x", M.l).attr("y", 14);
@@ -38,11 +40,12 @@ export function createLine(container, spec, datasets) {
       pm.attr("transform", (d, i) => `translate(${20 + (i % cols) * (pw + gapX)},${top + Math.floor(i / cols) * (ph + gapY)})`);
       pm.select("rect.bg").attr("width", pw).attr("height", ph); pm.select("text.ptitle").text((d) => (d.facet == null ? "" : labelFor(spec, d.facet)));
       pm.select("g.axis.x").attr("transform", `translate(0,${ph - M.b})`).call(d3.axisBottom(x).ticks(4).tickFormat(fx).tickSize(0).tickPadding(6));
-      pm.select("g.axis.y").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat((v) => (Math.abs(v) >= 1000 ? d3.format(",.0f")(v / 1000) + "k" : d3.format(",.1f")(v).replace(/\.0$/, ""))).tickSize(-(pw - M.l - M.r)).tickPadding(6));
-      pm.select("g.axis.y").selectAll("line").attr("stroke", INK.grid);
       pm.transition().duration(t).attr("opacity", (d) => (state.focus && d.facet !== state.focus ? 0.3 : 1));
       pm.each(function (p) {
         const ser = p.series.filter((s) => keys.includes(s.key));
+        if (!yShared) { y = yFor(ser.flatMap((s) => s.rows)); line = d3.line().x((d) => x(d.x)).y((d) => y(d.v)).curve(d3.curveMonotoneX); }
+        d3.select(this).select("g.axis.y").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat((v) => (Math.abs(v) >= 1000 ? d3.format(",.0f")(v / 1000) + "k" : d3.format(",.1f")(v).replace(/\.0$/, ""))).tickSize(-(pw - M.l - M.r)).tickPadding(6));
+        d3.select(this).select("g.axis.y").selectAll("line").attr("stroke", INK.grid);
         const ls = d3.select(this).select("g.lines").selectAll("path").data(ser, (d) => d.key);
         ls.enter().append("path").attr("fill", "none").attr("stroke-width", 2).attr("stroke-linejoin", "round").attr("stroke", (d) => colorFor(spec, d.key, keyIdx(d.key))).attr("d", (d) => line(d.rows))
           .attr("stroke-dasharray", function () { const L = this.getTotalLength(); return `${L} ${L}`; }).attr("stroke-dashoffset", function () { return this.getTotalLength(); })

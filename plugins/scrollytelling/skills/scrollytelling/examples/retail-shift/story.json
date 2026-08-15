@@ -1,0 +1,478 @@
+{
+ "title": "The Death of the Department Store",
+ "kicker": "A data story · US retail sales · 1992 → 2026",
+ "subtitle": "How one in ten retail dollars became one in fifty — and where the money went instead.",
+ "sourceNote": "Source: US Census Bureau Monthly Retail Trade Survey via FRED. Seasonally adjusted, nominal dollars. Every number on this page is computed from that data.",
+ "theme": {
+  "accent": "#f08a5d"
+ },
+ "data": {
+  "monthly": "retail_monthly.csv",
+  "annual": "retail_annual.csv",
+  "long": "retail_monthly_long.csv",
+  "covid": "covid_feb_apr_2020.csv",
+  "kinds": "kinds_summary.csv",
+  "ecom": "ecommerce_share.csv"
+ },
+ "scenes": [
+  {
+   "id": "a",
+   "charts": {
+    "hero": {
+     "type": "number",
+     "format": {
+      "format": "$,.1f",
+      "suffix": "B"
+     },
+     "defaults": {
+      "dot": false
+     }
+    },
+    "lines": {
+     "type": "line",
+     "data": "monthly",
+     "x": "year_dec",
+     "ys": [
+      "Department stores",
+      "Online & other nonstore"
+     ],
+     "colors": {
+      "Department stores": "#d95926",
+      "Online & other nonstore": "#199e70"
+     },
+     "format": {
+      "format": "$,.1f",
+      "suffix": "B"
+     },
+     "xFormat": "d",
+     "seriesOrder": [
+      "Department stores",
+      "Online & other nonstore"
+     ],
+     "defaults": {
+      "title": "Monthly sales, US department stores vs. online & other nonstore retailers",
+      "subtitle": "Billions of dollars per month, seasonally adjusted, Jan 1992 – Jul 2026",
+      "yDomain": [
+       0,
+       145
+      ]
+     }
+    }
+   },
+   "steps": [
+    {
+     "show": "hero",
+     "heading": "$137 billion a month.",
+     "text": "That is what Americans now spend each month with online and other nonstore retailers — Amazon, mail order, direct selling.",
+     "state": {
+      "value": {
+       "data": "monthly",
+       "where": {
+        "month": "2026-07"
+       },
+       "column": "Online & other nonstore"
+      },
+      "label": "online & other nonstore retail sales, July 2026",
+      "from": 0
+     }
+    },
+    {
+     "show": "hero",
+     "heading": "In January 1992 it was $5.4 billion.",
+     "text": "Twenty-five times less. Meanwhile, department stores did $14.1 billion that month — the anchors of every mall in America.",
+     "state": {
+      "value": {
+       "data": "monthly",
+       "where": {
+        "month": "1992-01"
+       },
+       "column": "Online & other nonstore"
+      },
+      "label": "online & other nonstore retail sales, January 1992"
+     }
+    },
+    {
+     "show": "lines",
+     "heading": "Department stores peaked in January 2001.",
+     "text": "<strong>$19.9 billion</strong> in a single month. It has been downhill ever since — before Amazon was profitable, before the iPhone.",
+     "state": {
+      "series": [
+       "Department stores"
+      ],
+      "yDomain": [
+       0,
+       25
+      ],
+      "annotations": [
+       {
+        "series": "Department stores",
+        "x": 2001,
+        "text": "Jan 2001 peak: {value}",
+        "anchor": "start",
+        "dx": 8,
+        "dy": -10
+       }
+      ]
+     }
+    },
+    {
+     "show": "lines",
+     "heading": "October 2004: the lines cross.",
+     "text": "Online and other nonstore sales passed department stores that month — <strong>$18.1B to $18.0B</strong> — and never looked back.",
+     "state": {
+      "series": [
+       "Department stores",
+       "Online & other nonstore"
+      ],
+      "yDomain": [
+       0,
+       145
+      ],
+      "annotations": [
+       {
+        "x": 2004.75,
+        "xRule": true,
+        "text": "Oct 2004: online passes department stores",
+        "anchor": "start",
+        "level": 0
+       }
+      ]
+     }
+    },
+    {
+     "show": "lines",
+     "heading": "Then 2020.",
+     "text": "In April 2020 department-store sales fell to <strong>$6.2 billion</strong> — a level last seen in the 1980s — while online jumped 19% in two months and kept most of it.",
+     "state": {
+      "series": [
+       "Department stores",
+       "Online & other nonstore"
+      ],
+      "yDomain": [
+       0,
+       145
+      ],
+      "annotations": [
+       {
+        "x": 2020.25,
+        "xRule": true,
+        "text": "April 2020",
+        "anchor": "end",
+        "level": 0
+       },
+       {
+        "series": "Department stores",
+        "x": 2020.25,
+        "text": "{value}",
+        "anchor": "end",
+        "dx": -8,
+        "dy": 16
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "b",
+   "charts": {
+    "mix": {
+     "type": "area",
+     "data": "annual",
+     "x": "year",
+     "series": [
+      "Motor vehicles & parts",
+      "Grocery stores",
+      "Gas stations",
+      "Building materials & garden",
+      "Health & personal care",
+      "Clothing stores",
+      "Furniture stores",
+      "Electronics & appliance",
+      "Sporting goods, hobby, books",
+      "All other stores",
+      "Department stores",
+      "Online & other nonstore"
+     ],
+     "colors": {
+      "Motor vehicles & parts": "#3b4252",
+      "Grocery stores": "#4c566a",
+      "Gas stations": "#434c5e",
+      "Building materials & garden": "#5e6a80",
+      "Health & personal care": "#6b7a94",
+      "Clothing stores": "#556277",
+      "Furniture stores": "#7a8aa5",
+      "Electronics & appliance": "#8797b3",
+      "Sporting goods, hobby, books": "#94a3bd",
+      "All other stores": "#2e3440",
+      "Department stores": "#d95926",
+      "Online & other nonstore": "#199e70"
+     },
+     "labels": {
+      "Sporting goods, hobby, books": "Sporting goods",
+      "Building materials & garden": "Building materials",
+      "Electronics & appliance": "Electronics",
+      "Motor vehicles & parts": "Motor vehicles",
+      "Online & other nonstore": "Online & nonstore"
+     },
+     "format": {
+      "format": "$,.0f",
+      "suffix": "B"
+     },
+     "xFormat": "d",
+     "defaults": {
+      "title": "US retail sales by kind of business",
+      "subtitle": "Billions of dollars per year, 1992–2024"
+     },
+     "legend": false
+    }
+   },
+   "steps": [
+    {
+     "heading": "The whole cart.",
+     "text": "All US retail sales (excluding restaurants), stacked by kind of store. Cars, groceries and gas are the big grey slabs. Watch the orange and green layers on top.",
+     "state": {
+      "highlight": [
+       "Department stores",
+       "Online & other nonstore"
+      ]
+     }
+    },
+    {
+     "heading": "As a share of every dollar.",
+     "text": "Re-scaled to 100%: department stores shrink from <strong>10.1% of retail in 1992 to 1.8% in 2024</strong>. Online grows from 3.8% to <strong>19.5%</strong>.",
+     "state": {
+      "normalize": true,
+      "highlight": [
+       "Department stores",
+       "Online & other nonstore"
+      ],
+      "subtitle": "Share of US retail sales by kind of business, 1992–2024",
+      "annotations": [
+       {
+        "series": "Department stores",
+        "x": 1992,
+        "text": "Dept stores {value}",
+        "anchor": "start",
+        "dx": 8
+       },
+       {
+        "series": "Online & other nonstore",
+        "x": 2024,
+        "text": "Online {value}",
+        "anchor": "end",
+        "dx": -8
+       }
+      ]
+     }
+    },
+    {
+     "heading": "The rest barely moved.",
+     "text": "Cars, groceries, gas, building materials: their slices wobble but hold. This is not the whole of retail changing — it is one kind of store swallowing another.",
+     "state": {
+      "normalize": true,
+      "subtitle": "Share of US retail sales by kind of business, 1992–2024"
+     }
+    }
+   ]
+  },
+  {
+   "id": "c",
+   "charts": {
+    "covid": {
+     "type": "bar",
+     "data": "covid",
+     "category": "kind",
+     "value": "change_pct",
+     "format": {
+      "format": "+.1f",
+      "suffix": "%"
+     },
+     "valueLabel": "Change Feb → Apr 2020",
+     "color": "#3987e5",
+     "negativeColor": "#e66767",
+     "colors": {
+      "Department stores": "#d95926",
+      "Online & other nonstore": "#199e70"
+     },
+     "defaults": {
+      "title": "Two months that changed shopping",
+      "subtitle": "Change in monthly sales, February → April 2020, by kind of store"
+     }
+    },
+    "sm": {
+     "type": "line",
+     "data": "long",
+     "x": "year_dec",
+     "y": "sales_bn",
+     "series": "kind",
+     "facet": "kind",
+     "facets": [
+      "Department stores",
+      "Electronics & appliance",
+      "Online & other nonstore",
+      "Health & personal care"
+     ],
+     "colors": {
+      "Department stores": "#d95926",
+      "Electronics & appliance": "#8797b3",
+      "Online & other nonstore": "#199e70",
+      "Health & personal care": "#3987e5"
+     },
+     "format": {
+      "format": "$,.1f",
+      "suffix": "B"
+     },
+     "xFormat": "d",
+     "defaults": {
+      "title": "Four kinds of store, 1992–2026",
+      "subtitle": "Billions of dollars per month, seasonally adjusted · each panel has its own scale"
+     },
+     "yShared": false
+    }
+   },
+   "steps": [
+    {
+     "show": "covid",
+     "heading": "The accelerant.",
+     "text": "Between February and April 2020 clothing stores lost <strong>88%</strong> of their sales, furniture 61%, department stores 43%. Online <strong>gained 19%</strong>. Groceries gained too.",
+     "state": {}
+    },
+    {
+     "show": "sm",
+     "heading": "It wasn't only department stores.",
+     "text": "Electronics and appliance stores peaked in <strong>May 2008</strong> and are still below that peak in nominal dollars. Some kinds of shop simply moved online.",
+     "state": {
+      "endLabels": false,
+      "focus": "Electronics & appliance",
+      "annotations": [
+       {
+        "facet": "Electronics & appliance",
+        "series": "Electronics & appliance",
+        "x": 2008.3333,
+        "text": "May 2008 peak {value}",
+        "anchor": "start",
+        "dx": 8,
+        "dy": -8
+       }
+      ]
+     }
+    },
+    {
+     "show": "sm",
+     "heading": "…while pharmacies and online kept climbing.",
+     "text": "Health & personal care stores are 5.5× their 1992 sales; online & nonstore 25×. Department stores are the only one of the four that ends below where it peaked twenty-five years ago.",
+     "state": {
+      "endLabels": false,
+      "focus": "Online & other nonstore"
+     }
+    }
+   ]
+  },
+  {
+   "id": "d",
+   "charts": {
+    "ecom": {
+     "type": "line",
+     "data": "ecom",
+     "x": "year_dec",
+     "ys": [
+      "share_pct"
+     ],
+     "labels": {
+      "share_pct": "E-commerce share of retail sales"
+     },
+     "colors": {
+      "share_pct": "#199e70"
+     },
+     "format": {
+      "format": ".1f",
+      "suffix": "%"
+     },
+     "xFormat": "d",
+     "yDomain": [
+      0,
+      20
+     ],
+     "defaults": {
+      "title": "E-commerce as a share of all US retail sales",
+      "subtitle": "Quarterly, seasonally adjusted, Q4 1999 – Q1 2026"
+     }
+    },
+    "hero": {
+     "type": "number",
+     "format": {
+      "format": ".1f",
+      "suffix": "%"
+     },
+     "defaults": {
+      "dot": false
+     }
+    }
+   },
+   "steps": [
+    {
+     "show": "ecom",
+     "heading": "From 0.6% to 16.9%.",
+     "text": "The Census Bureau's own e-commerce measure: <strong>0.6%</strong> of retail sales in late 1999, <strong>16.9%</strong> in early 2026.",
+     "state": {
+      "endLabels": false,
+      "annotations": [
+       {
+        "series": "share_pct",
+        "x": 1999.75,
+        "text": "Q4 1999: {value}",
+        "anchor": "start",
+        "dx": 8,
+        "dy": -10
+       },
+       {
+        "series": "share_pct",
+        "x": 2026,
+        "text": "Q1 2026: {value}",
+        "anchor": "end",
+        "dx": -8,
+        "dy": -10
+       }
+      ]
+     }
+    },
+    {
+     "show": "ecom",
+     "heading": "The pandemic pulled the future forward.",
+     "text": "The share jumped in 2020 and never gave it back. Every point of that line is a dollar that once passed through a store.",
+     "state": {
+      "endLabels": false,
+      "annotations": [
+       {
+        "x": 2020.25,
+        "xRule": true,
+        "text": "Q2 2020",
+        "anchor": "end",
+        "level": 0
+       }
+      ]
+     }
+    },
+    {
+     "show": "hero",
+     "heading": "One in fifty.",
+     "text": "Department stores took one retail dollar in ten in 1992. By 2024 it was one in fifty-five — and in 2025 the Census Bureau stopped publishing the series at all.",
+     "state": {
+      "value": {
+       "data": "kinds",
+       "where": {
+        "kind": "Department stores"
+       },
+       "column": "share_2024_pct"
+      },
+      "label": "department stores' share of US retail sales, 2024",
+      "sublabel": "10.1% in 1992"
+     }
+    }
+   ]
+  }
+ ],
+ "footerTitle": "Method & sources",
+ "footerHtml": "<p>Data: US Census Bureau, Monthly Retail Trade Survey, seasonally adjusted, via FRED (series RSDSELD department stores, RSNSR nonstore retailers, RSXFS retail excluding food services, and kind-of-business series RSCCAS, RSGCS, RSEAS, RSSGHBMS, RSFHFS, RSBMGESD, RSHPCS, RSMVPD, RSGASS; e-commerce share ECOMPCTSA), downloaded August 2026. All values are <em>nominal</em> dollars — growth multiples include inflation; shares and crossovers do not. \"Online &amp; other nonstore\" is NAICS 454 (electronic shopping and mail-order, vending, direct selling). Kind-of-business series do not sum to the total; the remainder is shown as \"All other stores\". The department-store series was discontinued after March 2025, so annual charts end in 2024.</p>"
+}

@@ -29,12 +29,12 @@ spec: `{ "type": "number", "format", "color" }`
 state: `{ "value": ref, "max": ref (dot area scale), "from": 0, "label", "sublabel", "dot": true }`
 
 ### `area` — stacked area, morphs to 100 % share
-spec: `{ "type": "area", "data", "x": "year", "series": ["a","b",…] (bottom→top), "labels": {col: "Label"}, "colors": {col: "#hex"}, "format", "xFormat", "defaults": {…} }`
-state: `{ "visible": [cols], "highlight": [cols], "normalize": bool, "showLabels": bool, "yDomain": [0, max], "annotations": [ { "x": 2021, "xRule": true, "text", "anchor": "end", "level": 0 }, { "stackTop": "oil", "x": 2000, "text": "Fossil {value}" }, { "series": "solar", "x": 2024, "text": "{value}" } ] }`
+spec: `{ "type": "area", "data", "x": "year", "series": ["a","b",…] (bottom→top), "labels": {col: "Label"}, "colors": {col: "#hex"}, "format", "xFormat", "xTicks", "legend": false (hide the legend when > 8 series — direct labels carry identity), "defaults": {…} }`
+state: `{ "visible": [cols], "highlight": [cols], "normalize": bool, "showLabels": bool, "yDomain": [0, max], "annotations": [ { "x": 2021, "xRule": true, "text", "anchor": "end", "level": 0 }, { "stackTop": "oil", "x": 2000, "text": "Fossil {value}" }, { "series": "solar", "x": 2024, "text": "{value}" } (placed mid-layer at that x) ] }`
 Tips: keep `series` order fixed (it is the palette order — validated adjacent pairs); put the story's hero series on top; use `highlight` before `normalize`; `{value}` is filled from the data.
 
 ### `line` — lines or small multiples (facets)
-spec: `{ "type": "line", "data", "x", "ys": [cols] | ("y" + "series" col for long data), "facet": col, "facets": [values], "labels", "colors", "format", "xFormat", "yDomain", "seriesOrder", "defaults" }`
+spec: `{ "type": "line", "data", "x", "ys": [cols] | ("y" + "series" col for long data), "facet": col, "facets": [values], "yShared": false (independent y per panel), "labels", "colors", "format", "xFormat", "yDomain", "seriesOrder", "defaults" }`
 state: `{ "series": [keys], "highlight": [keys], "focus": facetValue, "where", "yDomain", "endLabels": bool, "annotations": [ { "facet", "series": key, "x", "text": "Coal {value}", "anchor", "dx", "dy" } ] }`
 
 ### `bar` — horizontal bars

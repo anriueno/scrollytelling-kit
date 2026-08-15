@@ -37,11 +37,11 @@ export function createArea(container, spec, datasets) {
         .text((d) => `${narrow ? labelFor(spec, d.key).split(" ")[0] : labelFor(spec, d.key)} ${share ? pct(last[d.key] / last.__total) : f(last[d.key])}`).attr("fill", (d) => (hi && hi.has(d.key) ? INK.ink : null))
         .transition().duration(t).attr("x", M.left + iw + 8).attr("y", (d) => d.y).attr("opacity", (d) => (hi && !hi.has(d.key) ? 0.5 : 1));
       dl.exit().transition().duration(t).attr("opacity", 0).remove();
-      ch.legend([...spec.series].reverse().filter((k) => vis.has(k)).map((k) => [labelFor(spec, k), colorFor(spec, k, spec.series.indexOf(k))])); ch.legendLeft(M.left);
+      ch.legend(spec.legend === false ? [] : [...spec.series].reverse().filter((k) => vis.has(k)).map((k) => [labelFor(spec, k), colorFor(spec, k, spec.series.indexOf(k))])); ch.legendLeft(M.left);
       // annotations: y may be given as {series:"coal", top:true} → boundary of the stack; support xRule
       const anns = (state.annotations || []).map((a) => {
         if (a.stackTop) { const idx = spec.series.indexOf(a.stackTop); const ri = rows.findIndex((r) => r.__x === +a.x); const v = stack[idx][ri][1]; const raw = share ? v : v; return { ...a, y: v, dot: a.dot ?? true, text: (a.text || "{value}").replace("{value}", share ? d3.format(".1%")(v) : f(v)) }; }
-        if (a.series && a.x != null) { const row = rows.find((r) => r.__x === +a.x); return { ...a, y: null, text: (a.text || "{value}").replace("{value}", share ? d3.format(".1%")(row[a.series] / row.__total) : f(row[a.series])) }; }
+        if (a.series && a.x != null) { const ri = rows.findIndex((r) => r.__x === +a.x); const row = rows[ri]; const idx = spec.series.indexOf(a.series); const seg = stack[idx][ri]; return { ...a, y: (seg[0] + seg[1]) / 2, dy: a.dy ?? 4, text: (a.text || "{value}").replace("{value}", share ? d3.format(".1%")(row[a.series] / row.__total) : f(row[a.series])) }; }
         return a;
       });
       drawAnnotations(gAnn, anns, x, y, t, { top: M.top, bottom: M.top + ih });

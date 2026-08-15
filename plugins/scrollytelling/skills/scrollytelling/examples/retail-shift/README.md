@@ -1,0 +1,1 @@
+Real business/macro example: US retail sales by kind of business (Census via FRED). Shows line (two lines, crossover), area with legend:false + mid-layer annotations, negative bars, small multiples with yShared:false, and a quarterly share line. Replace the Superstore example if you want fewer examples.
