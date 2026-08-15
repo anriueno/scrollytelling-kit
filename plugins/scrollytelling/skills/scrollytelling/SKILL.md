@@ -1,6 +1,7 @@
 ---
 name: scrollytelling
-description: Turn a user's dataset (CSV) into a scroll-driven data story — a New York Times / Pudding-style scrollytelling page built with D3 + Scrollama from a single story.json. Use when the user says "scrollytelling", "scrolly", "data story", "turn this CSV into a story", "storytelling visualization", or wants a narrative, scroll-animated presentation of data. Handles: profiling the data, proposing story angles, writing the storyboard with the user, filling story.json (no custom chart code needed), running and visually QA-ing the page, and preparing it for deploy.
+argument-hint: "[path/to/data.csv]"
+description: Turn a dataset (CSV) into a scroll-driven data story — a New York Times / Pudding / Flourish-style scrollytelling web page (sticky animated D3 charts + scrolling narrative) generated from a single story.json, no chart code. Use when the user says "scrollytelling", "scrolly", "scroll story", "data story", "data journalism piece", "explainer", "interactive article", "storytelling visualization", "narrative dashboard", "turn this CSV/spreadsheet/data into a story", "like the NYT / The Pudding / Flourish", or wants charts that change as you scroll. Handles: profiling the data, computing verified facts, proposing story angles, writing the storyboard with the user, filling story.json (number, area/share-morph, line/small-multiples, bar, scatter with fit/paths/year-scrub, beeswarm, world map), running and visually QA-ing the page, and preparing it for deploy (Netlify/Vercel/GitHub Pages).
 ---
 
 # Scrollytelling from your data
