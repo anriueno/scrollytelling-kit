@@ -1,6 +1,8 @@
 import * as d3 from "d3";
 import scrollama from "scrollama";
 import { deepMerge, num, where, applyTheme } from "./util.js";
+import { FONTS, applyFont } from "./fonts.js";
+import { initEditor } from "./editor.js";
 import { createNumber } from "./charts/number.js";
 import { createArea } from "./charts/area.js";
 import { createBar } from "./charts/bar.js";
@@ -21,6 +23,8 @@ async function main() {
   const saved = (() => { try { return localStorage.getItem("scrolly-theme"); } catch { return null; } })();
   const themeCfg = { ...(story.theme || {}), ...(saved ? { preset: saved } : {}), ...(q.get("theme") ? { preset: q.get("theme") } : {}), ...(q.get("density") ? { density: q.get("density") } : {}), ...(q.get("accent") ? { accent: "#" + q.get("accent").replace("#", "") } : {}) };
   applyTheme(themeCfg);
+  const savedFont = (() => { try { return localStorage.getItem("scrolly-font"); } catch { return null; } })();
+  applyFont(q.get("font") || savedFont || (story.theme && story.theme.font) || "system");
   // datasets
   const datasets = {};
   await Promise.all(Object.entries(story.data || {}).map(async ([k, f]) => { datasets[k] = await d3.csv(`${base}data/${f}`); }));
@@ -58,12 +62,17 @@ async function main() {
   }
   scenes.forEach((s) => renderStep(s, 0, true));
 
+  // ---- inline text editing (E / ?edit=1; ⌘S saves to story.json in dev, downloads on a static site). Disable with "editor": false ----
+  if (story.editor !== false) initEditor(story, { start: q.get("edit") === "1" });
+
   // ---- optional reader-facing theme switcher: "themeSwitcher": true in story.json ----
   if (story.themeSwitcher) {
     const names = { dark: "Dark", paper: "Paper", bold: "Bold" };
     const sw = document.createElement("div"); sw.className = "theme-switcher"; sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Colour theme");
-    sw.innerHTML = Object.entries(names).map(([k, v]) => `<button type="button" data-t="${k}" aria-pressed="${document.documentElement.dataset.theme === k}">${v}</button>`).join("");
+    sw.innerHTML = Object.entries(names).map(([k, v]) => `<button type="button" data-t="${k}" aria-pressed="${document.documentElement.dataset.theme === k}">${v}</button>`).join("")
+      + `<select aria-label="Font">${FONTS.map((f) => `<option value="${f.id}" ${document.documentElement.dataset.font === f.id ? "selected" : ""}>${f.label}</option>`).join("")}</select>`;
     document.body.appendChild(sw);
+    sw.querySelector("select").addEventListener("change", (e) => { const id = applyFont(e.target.value); try { localStorage.setItem("scrolly-font", id); } catch {} });
     sw.addEventListener("click", (e) => {
       const b = e.target.closest("button[data-t]"); if (!b) return;
       const preset = b.dataset.t; try { localStorage.setItem("scrolly-theme", preset); } catch {}

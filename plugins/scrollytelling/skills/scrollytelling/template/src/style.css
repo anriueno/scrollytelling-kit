@@ -188,4 +188,17 @@ select { font: inherit; font-size: 1rem; text-transform: none; letter-spacing: 0
 .theme-switcher button { font: inherit; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); background: transparent; border: 0; border-radius: 999px; padding: 4px 10px; cursor: pointer; }
 .theme-switcher button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .theme-switcher button:hover { color: var(--ink); }
+.theme-switcher select { font: inherit; font-size: 11px; color: var(--ink-2); background: transparent; border: 0; border-left: 1px solid var(--card-border); padding: 2px 6px; margin-left: 4px; max-width: 150px; }
 @media (max-width: 900px) { .theme-switcher { top: auto; bottom: 12px; right: 12px; } }
+
+/* ---- inline editor ---- */
+.edit-toggle { position: fixed; bottom: 14px; left: 14px; z-index: 60; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--card-border); background: var(--card); color: var(--ink-2); font-size: 16px; cursor: pointer; opacity: .55; }
+.edit-toggle:hover, html[data-editing] .edit-toggle { opacity: 1; color: var(--ink); }
+.edit-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 70; display: flex; gap: .6rem; align-items: center; justify-content: center; padding: .45rem 1rem; background: var(--accent); color: #fff; font-size: 13px; }
+.edit-bar button { font: inherit; font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.6); background: transparent; color: #fff; cursor: pointer; }
+.edit-bar button:hover { background: rgba(255,255,255,.18); }
+html[data-editing] [contenteditable="true"] { outline: 1px dashed var(--accent); outline-offset: 3px; cursor: text; }
+html[data-editing] [contenteditable="true"]:focus { outline-style: solid; }
+html[data-editing] .step { opacity: 1; }
+html[data-editing] .theme-switcher { top: 52px; }
+@media print { .edit-toggle, .edit-bar, .theme-switcher { display: none; } }

@@ -5,11 +5,13 @@ One file drives the whole page. Charts read the CSVs in `public/data/`; every nu
 ```jsonc
 {
   "title": "…", "kicker": "…", "subtitle": "…", "sourceNote": "…",
-  "theme": { "preset": "dark" | "paper" | "bold", "accent": "#f0a640", "density": "reading" | "presentation", "palette": [8 hex] },
+  "theme": { "preset": "dark" | "paper" | "bold", "accent": "#f0a640", "density": "reading" | "presentation", "palette": [8 hex], "font": "system" },
+  //   font ids (display · body, loaded on demand from Google Fonts; "system" = no download): system, fraunces, playfair, newsreader, libre, dmserif, cormorant, syne, bebas, archivo, plexmono. Preview with ?font=<id>.
   //   preset: dark editorial (default) · paper (light, warm) · bold (black, big sans, hot accent). density "presentation" = bigger, fewer words.
   //   For style previews, open the dev URL with ?theme=paper / ?theme=bold / &density=presentation — no file edits needed.
   "data": { "name": "file.csv", … },                 // datasets by name (files in public/data/)
-  "themeSwitcher": true,                             // optional: show a Dark / Paper / Bold toggle to readers (remembered in localStorage)
+  "themeSwitcher": true,                             // optional: show a Dark / Paper / Bold toggle + font menu to readers (remembered in localStorage)
+  "editor": true,                                    // default true: press E (or ?edit=1) to edit hero/step/footer text in place; ⌘/Ctrl+S saves to public/story.json in `npm run dev`, downloads story.json on a static site
   "geo": "world.geojson",                            // optional; default world.geojson (ISO3 ids)
   "scenes": [ { "id": "a", "charts": { "<name>": <chartSpec>, … }, "steps": [ <step>, … ] } ],
   "footerTitle": "Method & sources", "footerHtml": "<p>…</p>"

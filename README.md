@@ -36,7 +36,7 @@ ln -s "$(pwd)/scrollytelling-kit/plugins/scrollytelling/skills/scrollytelling" ~
 7. **QA** — runs the page and checks every step in a browser (collisions, scroll-back, mobile, console), then `npm run build`.
 8. **Share** — `scripts/deploy.sh` (Vercel, free) and `scripts/export_steps.mjs` (PNG per step + PDF handout).
 
-**Themes:** `dark` editorial (default) · `paper` (light, warm) · `bold` (black, big sans, hot accent) — set in `story.json` (`theme.preset`, `theme.accent`) or previewed with `?theme=`. **Density:** `reading` (default) or `presentation` (bigger type, fewer words) for scrolling live while you talk. **Reader toggle:** `"themeSwitcher": true` adds a Dark / Paper / Bold control to the page (remembered per reader).
+**Themes:** `dark` editorial (default) · `paper` (light, warm) · `bold` (black, big sans, hot accent) — set in `story.json` (`theme.preset`, `theme.accent`) or previewed with `?theme=`. **Density:** `reading` (default) or `presentation` (bigger type, fewer words) for scrolling live while you talk. **Reader toggle:** `"themeSwitcher": true` adds a Dark / Paper / Bold control and a font menu (10 curated Google-Fonts pairings, loaded on demand; `theme.font` / `?font=`) to the page, remembered per reader. **Inline editing:** press **E** on any story, click text, **⌘/Ctrl+S** — in `npm run dev` it writes straight back to `public/story.json`; on a published site it downloads the updated file.
 
 ## The engine (`template/`)
 Seven chart primitives, all declarative and step-state driven:
