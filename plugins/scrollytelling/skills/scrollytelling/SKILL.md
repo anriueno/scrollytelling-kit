@@ -1,7 +1,20 @@
 ---
 name: scrollytelling
-argument-hint: "[path/to/data.csv]"
-description: Turn a dataset (CSV) into a scroll-driven data story — a New York Times / Pudding / Flourish-style scrollytelling web page (sticky animated D3 charts + scrolling narrative) generated from a single story.json, no chart code. Use when the user says "scrollytelling", "scrolly", "scroll story", "data story", "data journalism piece", "explainer", "interactive article", "storytelling visualization", "narrative dashboard", "turn this CSV/spreadsheet/data into a story", "like the NYT / The Pudding / Flourish", or wants charts that change as you scroll. Handles: profiling the data, computing verified facts, proposing story angles, writing the storyboard with the user, filling story.json (number, area/share-morph, line/small-multiples, bar, scatter with fit/paths/year-scrub, beeswarm, world map), running and visually QA-ing the page, and preparing it for deploy (Netlify/Vercel/GitHub Pages).
+description: >-
+  Turn CSV or tabular data into a scroll-driven interactive data story (New York Times /
+  Pudding / Flourish style) built with D3 and Scrollama from a single story.json — no chart
+  code. Use when the user asks for scrollytelling, a scrolly or scroll story, a data story,
+  a data journalism piece, an explainer, an interactive article, a storytelling or narrative
+  visualization, a narrative dashboard, charts that change as you scroll, or asks to turn a
+  CSV, spreadsheet or dataset into a story. Profiles the data, computes verified facts,
+  proposes story angles, writes the storyboard with the user, generates story.json (number,
+  area with share morph, line and small multiples, bar, scatter with fit, paths and year
+  scrub, beeswarm, world map), visually QA's the page in a browser, and prepares deploy and
+  export. Invoke with an optional path to the data file.
+license: MIT
+metadata:
+  version: "0.3.1"
+  author: anriueno
 ---
 
 # Scrollytelling from your data
@@ -12,7 +25,7 @@ Kit layout (this skill's directory):
 - `template/` — Vite + D3 + Scrollama engine. Chart types: `number, area, line, bar, scatter, beeswarm, map`. Reads `public/story.json` + `public/data/*.csv`. Three visual themes (`dark`, `paper`, `bold`) and two density modes.
 - `reference/story-schema.md` — **read this before writing story.json** (all spec/state options).
 - `reference/storyboard-template.md`, `reference/qa-checklist.md`
-- `scripts/profile_data.py <csv>` — column types, roles, chart suggestions · `scripts/validate_story.py <project>` — checks story.json against the data · `scripts/new_story.sh <dir> [csv…]` — scaffold · `scripts/deploy.sh <dir>` — Vercel · `scripts/export_steps.mjs <url> <out>` — PNG per step + PDF handout.
+- `scripts/profile_data.py <csv>` — streaming profile (any file size): column types, roles, chart suggestions · `scripts/validate_story.py <project>` — semantic validator: every column/filter/annotation/value reference resolved against the data, ids/facets/series exist, log-axis and ISO3 checks, theme/font ids, placeholder words; **run it after every story.json edit and fix all ERRORs** · `scripts/new_story.sh <dir> [csv…]` — scaffold · `scripts/deploy.sh <dir>` — Vercel · `scripts/export_steps.mjs <url> <out>` — PNG per step + PDF handout.
 - `examples/` — finished story.json files. **Read only the one closest to your data shape** (never all of them): `solar-century` (wide time series → area/share morph, bars, line facets, beeswarm, world map), `price-of-a-year` (entity × year panel → scatter with fit, gap, year scrub, connected paths), `retail-shift` (monthly macro series → two-line crossover, area with many series, negative bars, small multiples), `superstore` (raw transactions → aggregated CSVs).
 
 ## Process (follow in order — do not skip to building)

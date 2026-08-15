@@ -9,7 +9,7 @@ export function initEditor(story, opts = {}) {
       const base = `#scrolly-${sc.id || `s${si}`} .step[data-step="${i}"]`;
       return [[`${base} h2`, (v) => (st.heading = v)], [`${base} p`, (v, html) => (st.text = html)]];
     })),
-    [".footer > p:not(.fine)", (v, html) => (story.footerHtml = `<p>${html}</p>`)],
+    [".footer .footer-body", (v, html) => (story.footerHtml = html)],   // whole container, so multi-paragraph footers survive
   ];
   const bar = document.createElement("div"); bar.className = "edit-bar"; bar.hidden = true;
   bar.innerHTML = `<span>Editing — click any text, then <b>⌘/Ctrl+S</b> to save</span><button type="button" data-a="save">Save</button><button type="button" data-a="off">Done</button>`;

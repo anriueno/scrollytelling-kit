@@ -48,7 +48,7 @@ async function main() {
     Object.entries(sc.charts).forEach(([name, spec]) => { const layer = document.createElement("div"); layer.className = "chart-layer hidden"; layer.dataset.chart = name; container.appendChild(layer); const make = FACTORIES[spec.type]; if (!make) throw new Error(`Unknown chart type "${spec.type}" in scene ${id}`); charts[name] = { spec, layer, api: make(layer, spec, datasets, { geo, resolve }) }; });
     scenes.push({ id, sc, charts, container, lastShown: null });
   });
-  if (story.footerHtml) app.insertAdjacentHTML("beforeend", `<footer class="footer"><h3>${esc(story.footerTitle || "Method & sources")}</h3>${story.footerHtml}<p class="fine">Built with D3.js and Scrollama. <a href="#hero">Back to top ↑</a></p></footer>`);
+  if (story.footerHtml) app.insertAdjacentHTML("beforeend", `<footer class="footer"><h3>${esc(story.footerTitle || "Method & sources")}</h3><div class="footer-body">${story.footerHtml}</div><p class="fine">Built with D3.js and Scrollama. <a href="#hero">Back to top ↑</a></p></footer>`);
 
   // ---- state resolution: step.state = deepMerge(chart.spec.defaults, previous carried state?) — we merge defaults + step only (idempotent) ----
   function stateFor(scene, stepIndex) {
@@ -62,8 +62,8 @@ async function main() {
   }
   scenes.forEach((s) => renderStep(s, 0, true));
 
-  // ---- inline text editing (E / ?edit=1; ⌘S saves to story.json in dev, downloads on a static site). Disable with "editor": false ----
-  if (story.editor !== false) initEditor(story, { start: q.get("edit") === "1" });
+  // ---- inline text editing: on in `npm run dev` (⌘S rewrites public/story.json) or when "editor": true in story.json (downloads story.json). Off on published sites by default. ----
+  if (import.meta.env.DEV ? story.editor !== false : story.editor === true) initEditor(story, { start: q.get("edit") === "1" });
 
   // ---- optional reader-facing theme switcher: "themeSwitcher": true in story.json ----
   if (story.themeSwitcher) {

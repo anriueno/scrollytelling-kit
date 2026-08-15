@@ -28,11 +28,11 @@ ln -s "$(pwd)/scrollytelling-kit/plugins/scrollytelling/skills/scrollytelling" ~
 
 ## What happens when you run it
 1. **Intake** — one message of questions: data, "do you know the story?", reading vs presenting, length, tone.
-2. **Profile** — column types, shape (long / wide / transactions), suggested charts (`scripts/profile_data.py`).
+2. **Profile** — one streaming pass over the file (multi-GB OK): column types, shape (long / wide / transactions), suggested charts (`scripts/profile_data.py`).
 3. **Find the story** — computes candidate facts (never invents numbers), proposes 2–3 angles with a twist, you pick.
 4. **Storyboard** — verified facts, scenes, chart per scene, caveats, acceptance checklist.
 5. **Style discovery — show, don't tell** — the first scene rendered three ways (`?theme=dark`, `?theme=paper`, `?theme=bold`); you pick by looking, not by describing colours.
-6. **Build** — scaffolds a Vite project from `template/`, cuts small tidy CSVs, writes `public/story.json`, validates it (`scripts/validate_story.py`).
+6. **Build** — scaffolds a Vite project from `template/`, cuts small tidy CSVs, writes `public/story.json`, runs the semantic validator (`scripts/validate_story.py`: every column, filter, annotation and value reference is resolved against the data; ids, facets, series, log axes, ISO3 codes, theme/font ids, placeholder words).
 7. **QA** — runs the page and checks every step in a browser (collisions, scroll-back, mobile, console), then `npm run build`.
 8. **Share** — `scripts/deploy.sh` (Vercel, free) and `scripts/export_steps.mjs` (PNG per step + PDF handout).
 

@@ -11,7 +11,7 @@ One file drives the whole page. Charts read the CSVs in `public/data/`; every nu
   //   For style previews, open the dev URL with ?theme=paper / ?theme=bold / &density=presentation — no file edits needed.
   "data": { "name": "file.csv", … },                 // datasets by name (files in public/data/)
   "themeSwitcher": true,                             // optional: show a Dark / Paper / Bold toggle + font menu to readers (remembered in localStorage)
-  "editor": true,                                    // default true: press E (or ?edit=1) to edit hero/step/footer text in place; ⌘/Ctrl+S saves to public/story.json in `npm run dev`, downloads story.json on a static site
+  "editor": true,                                    // inline text editor (E / ?edit=1). Always available in `npm run dev` (⌘/Ctrl+S rewrites public/story.json, .bak kept); OFF on published sites unless "editor": true (then ⌘S downloads story.json)
   "geo": "world.geojson",                            // optional; default world.geojson (ISO3 ids)
   "scenes": [ { "id": "a", "charts": { "<name>": <chartSpec>, … }, "steps": [ <step>, … ] } ],
   "footerTitle": "Method & sources", "footerHtml": "<p>…</p>"

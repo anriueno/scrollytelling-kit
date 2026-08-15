@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Profile a CSV for scrollytelling: column types, roles, ranges, cardinality, and chart suggestions.
-Usage: profile_data.py file.csv [--json]"""
+Streams the whole file (row count, min/max/missing/cardinality up to a cap) but keeps only the first
+SAMPLE_ROWS rows in memory for examples/role inference, so multi-GB files are fine.
+Usage: profile_data.py file.csv [--json] [--sample N]"""
 import csv, sys, json, re, statistics
 from collections import Counter
 
@@ -13,34 +15,54 @@ def num(v):
         return float(str(v).replace(",", ""))
     except: return None
 
-def profile(path):
+SAMPLE_ROWS = 100_000
+DISTINCT_CAP = 200_000
+
+def profile(path, sample_rows=SAMPLE_ROWS):
+    """Single streaming pass. Per column: count, missing, numeric-ness, min/max/sum, distinct (capped),
+    plus a bounded sample of raw values for role inference and examples."""
+    stats = {}; cols = None; total = 0
     with open(path, newline="", encoding="utf-8-sig") as fh:
-        rows = list(csv.DictReader(fh))
-    if not rows: return {"error": "empty file"}
-    cols = list(rows[0].keys())
-    out = {"file": path, "rows": len(rows), "columns": []}
+        reader = csv.DictReader(fh)
+        cols = reader.fieldnames or []
+        for c in cols: stats[c] = {"n": 0, "nonblank": 0, "numeric": True, "min": None, "max": None, "sum": 0.0, "distinct": set(), "capped": False, "sample": []}
+        for r in reader:
+            total += 1
+            for c in cols:
+                st = stats[c]; v = r.get(c, ""); st["n"] += 1
+                if v in ("", None): continue
+                st["nonblank"] += 1
+                if total <= sample_rows: st["sample"].append(v)
+                if not st["capped"]:
+                    st["distinct"].add(v)
+                    if len(st["distinct"]) > DISTINCT_CAP: st["capped"] = True
+                if st["numeric"]:
+                    n = num(v)
+                    if n is None: st["numeric"] = False
+                    else:
+                        st["sum"] += n; st["min"] = n if st["min"] is None or n < st["min"] else st["min"]; st["max"] = n if st["max"] is None or n > st["max"] else st["max"]
+    if total == 0: return {"error": "empty file"}
+    out = {"file": path, "rows": total, "sampled_rows": min(total, sample_rows), "columns": []}
     for c in cols:
-        vals = [r.get(c, "") for r in rows]
-        nonblank = [v for v in vals if v not in ("", None)]
-        nums = [num(v) for v in nonblank]
-        numeric = len(nonblank) > 0 and all(n is not None for n in nums)
-        distinct = len(set(nonblank))
-        info = {"name": c, "missing_pct": round(100 * (1 - len(nonblank) / len(vals)), 1), "distinct": distinct}
+        st = stats[c]; nonblank = st["sample"]; distinct = len(st["distinct"]) if not st["capped"] else f">{DISTINCT_CAP}"
+        numeric = st["nonblank"] > 0 and st["numeric"]
+        info = {"name": c, "missing_pct": round(100 * (1 - st["nonblank"] / max(1, st["n"])), 1), "distinct": distinct}
         if numeric:
-            ns = [n for n in nums if n is not None]
-            info.update({"type": "numeric", "min": min(ns), "max": max(ns), "mean": round(statistics.fmean(ns), 3)})
+            ns = [num(v) for v in nonblank if num(v) is not None]
+            info.update({"type": "numeric", "min": st["min"], "max": st["max"], "mean": round(st["sum"] / st["nonblank"], 3)})
+            dn = distinct if isinstance(distinct, int) else 10**9
             ints = all(float(n).is_integer() for n in ns)
             if IDLIKE.search(c): info["role"] = "identifier"
-            elif ints and 1500 <= min(ns) <= 2100 and 1500 <= max(ns) <= 2100 and distinct > 3: info["role"] = "year"
-            elif distinct <= 12 and ints: info["role"] = "ordinal/category"
+            elif ints and 1500 <= st["min"] <= 2100 and 1500 <= st["max"] <= 2100 and dn > 3: info["role"] = "year"
+            elif dn <= 12 and ints: info["role"] = "ordinal/category"
             else: info["role"] = "measure"
         else:
             info["type"] = "text"
-            sample = nonblank[:200]
-            if all(ISO3.match(str(v)) for v in sample) and distinct > 20: info["role"] = "iso3"
-            elif sum(1 for v in sample if DATE.match(str(v))) >= 0.9 * len(sample): info["role"] = "date"; info["examples"] = sample[:3]
-            elif IDLIKE.search(c) or distinct == len(nonblank): info["role"] = "identifier"
-            elif distinct <= 30: info["role"] = "category"; info["values"] = [v for v, _ in Counter(nonblank).most_common(12)]
+            sample = nonblank[:200]; dn = distinct if isinstance(distinct, int) else 10**9
+            if sample and all(ISO3.match(str(v)) for v in sample) and dn > 20: info["role"] = "iso3"
+            elif sample and sum(1 for v in sample if DATE.match(str(v))) >= 0.9 * len(sample): info["role"] = "date"; info["examples"] = sample[:3]
+            elif IDLIKE.search(c) or (isinstance(distinct, int) and distinct == st["nonblank"]): info["role"] = "identifier"
+            elif dn <= 30: info["role"] = "category"; info["values"] = [v for v, _ in Counter(nonblank).most_common(12)]
             else: info["role"] = "entity (many)"; info["examples"] = [v for v, _ in Counter(nonblank).most_common(6)]
         out["columns"].append(info)
     roles = {c["role"]: c["name"] for c in out["columns"] if "role" in c}
@@ -50,7 +72,8 @@ def profile(path):
     cats = [c["name"] for c in out["columns"] if c.get("role") in ("category", "ordinal/category")]
     entities = cats + [c["name"] for c in out["columns"] if c.get("role") == "entity (many)"]
     iso = [c["name"] for c in out["columns"] if c.get("role") == "iso3"]
-    shape = "transactions/events (one row per record; aggregate before charting)" if dates and not years else "long (entity × year)" if years and entities else "wide (one row per period)" if years else "cross-section (one row per entity)" if entities else "unknown"
+    ids = [c["name"] for c in out["columns"] if c.get("role") == "identifier"]
+    shape = "transactions/events (one row per record; aggregate before charting)" if dates and not years else "long (entity × year)" if years and (entities or iso) else "wide (one row per period)" if years else "cross-section (one row per entity)" if (entities or iso or ids) else "unknown"
     out["shape"] = shape
     sug = []
     if dates and measures: sug.append({"chart": "line/area (after aggregating)", "why": f"group by month/year of {dates[0]}" + (f" × {cats[0]}" if cats else "") + f", sum {measures[0]} → time series or stacked area"})
@@ -66,9 +89,10 @@ def profile(path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2: print(__doc__); sys.exit(1)
-    p = profile(sys.argv[1])
+    n = int(sys.argv[sys.argv.index("--sample") + 1]) if "--sample" in sys.argv else SAMPLE_ROWS
+    p = profile(sys.argv[1], n)
     if "--json" in sys.argv: print(json.dumps(p, indent=2)); sys.exit(0)
-    print(f"{p['file']}: {p['rows']} rows · shape: {p['shape']}")
+    print(f"{p['file']}: {p['rows']:,} rows (sampled {p['sampled_rows']:,} for examples) · shape: {p['shape']}")
     for c in p["columns"]:
         extra = f" [{c['min']}–{c['max']}]" if c.get("type") == "numeric" else (f" e.g. {c.get('values') or c.get('examples')}" if c.get("values") or c.get("examples") else "")
         print(f"  {c['name']:32s} {c.get('type','?'):8s} {c.get('role','?'):18s} distinct={c['distinct']:<6} missing={c['missing_pct']}%{extra}")
