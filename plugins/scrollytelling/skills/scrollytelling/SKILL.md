@@ -13,7 +13,7 @@ description: >-
   export. Invoke with an optional path to the data file.
 license: MIT
 metadata:
-  version: "0.3.3"
+  version: "0.3.4"
   author: anriueno
 ---
 
@@ -27,6 +27,15 @@ Kit layout (this skill's directory):
 - `reference/storyboard-template.md`, `reference/qa-checklist.md`
 - `scripts/profile_data.py <csv>` — streaming profile (any file size): column types, roles, chart suggestions · `scripts/validate_story.py <project>` — semantic validator: every column/filter/annotation/value reference resolved against the data, ids/facets/series exist, log-axis and ISO3 checks, theme/font ids, placeholder words; **run it after every story.json edit and fix all ERRORs** · `scripts/new_story.sh <dir> [csv…]` — scaffold · `scripts/deploy.sh <dir>` — Vercel · `scripts/export_steps.mjs <url> <out>` — PNG per step + PDF handout.
 - `examples/` — finished story.json files. **Read only the one closest to your data shape** (never all of them): `solar-century` (wide time series → area/share morph, bars, line facets, beeswarm, world map), `price-of-a-year` (entity × year panel → scatter with fit, gap, year scrub, connected paths), `retail-shift` (monthly macro series → two-line crossover, area with many series, negative bars, small multiples), `superstore` (raw transactions → aggregated CSVs).
+
+## Five checkpoints — the user decides, you wait
+This is collaborative authoring, not a batch job. At each of these points, **stop, ask, and wait for the user's answer** before doing anything further. Do not "propose and proceed"; do not assume silence is consent. If you notice you are building without having passed a checkpoint, stop and go back to it.
+
+1. **Intake** (step 1) — data, story status, audience, length, tone.
+2. **Story angle** (step 3) — you propose 2–3 angles; the user picks or redirects. Then you write the storyboard and ask *"OK to build this?"* — a one-line yes is enough, but you need it.
+3. **Style** (step 5) — three rendered theme previews; the user picks.
+4. **Review** (step 8) — the finished page is opened **locally**; the user reads it and asks for changes; iterate until they say it's good.
+5. **Publish?** (step 8, last) — only after review, ask whether they want to deploy, export, or **keep it local** (the default). Never deploy, push, or create accounts/projects without an explicit yes.
 
 ## Process (follow in order — do not skip to building)
 
@@ -46,7 +55,7 @@ Do **not** invent context numbers. Everything on the page must come from the fil
 ### 3. Find the story (this is the valuable step)
 - Compute candidate facts with a short python script (extremes, growth ×, shares, before/after, rank changes, crossovers, outliers vs. a fit). **Never quote a number you have not computed.**
 - Propose **2–3 story angles**, each in one sentence with its twist ("X grew 10× — but Y's share barely moved because Z doubled"). Recommend one. Good stories have a hook (one striking number), a turn (a second chart that complicates it), and a "so what"/personal ending. If the user already knows the story, verify their claims against the data and say plainly where the data disagrees.
-- The user picks. Then write `STORYBOARD.md` from `reference/storyboard-template.md`: verified facts, scenes (insight → chart type + columns → steps), caveats (units, exclusions, anomalies you found), acceptance checklist. Keep it short; this is what the user reviews.
+- **Stop and wait for the user to pick.** Then write `STORYBOARD.md` from `reference/storyboard-template.md`: verified facts, scenes (insight → chart type + columns → steps), caveats (units, exclusions, anomalies you found), acceptance checklist. Keep it short; show the scene list in the chat and ask *"OK to build this?"* — **wait for the answer** before scaffolding.
 
 ### 4. Scaffold and cut the data
 - `bash scripts/new_story.sh <project-dir> <raw csvs>` · `cd <project-dir> && npm install`.
@@ -65,8 +74,11 @@ Do **not** invent context numbers. Everything on the page must come from the fil
 ### 7. Look at it, step by step
 `npm run dev`, open the URL in a browser you can control (Claude in Chrome / chrome-devtools MCP if available; otherwise ask the user to open it and describe/screenshot). **Jump to steps deterministically** instead of relying on scroll triggers (they don't fire in a background tab): open `http://localhost:5173/?step=a:3` (scene id : step index) or run `window.scrolly.goto("a", 3)` in the page, wait ~1.5 s for transitions, screenshot; `window.scrolly.list()` shows all scenes/steps. Follow `reference/qa-checklist.md`: every step, scroll-back test (real scrolling, tab in the foreground), ~400 px width, console clean, `npm run build`. If browser control isn't available, run `node scripts/export_steps.mjs http://localhost:5173 qa` and read the PNGs. Fix collisions with `listLabels`, `dx/dy`, `zoom`, `legend:false`, `yShared:false`, fewer labels, shorter text. Fix narrative problems by editing copy — never by fudging data.
 
-### 8. Deliver, then offer share/export
-Summarise the story in a few lines, list caveats, give run instructions — including that they can **edit any text directly in the page** (press E, click, ⌘/Ctrl+S saves to `story.json` while `npm run dev` is running) and, if `themeSwitcher` is on, switch theme/font from the corner control. Then ask once: deploy to a live URL (`bash scripts/deploy.sh <dir>` → Vercel, free; needs `vercel login`), export a PDF/PNG handout of every step (`node scripts/export_steps.mjs <url> <out>`, needs Playwright), both, or neither. Offer to add a LICENSE (code MIT; data keeps its own licence with attribution in the footer). If the user declines, stop.
+### 8. Show it locally, iterate, then ask about publishing
+- **Show first.** Open the local URL for the user (`open http://localhost:5173` on macOS, or paste the URL) and say what to look at. Do **not** mention deployment yet.
+- Summarise the story in a few lines, list caveats, and say how to change things: ask you, or press **E** on the page to edit text directly (⌘/Ctrl+S writes it back to `story.json` while the dev server runs), or the corner switcher for theme/font if `themeSwitcher` is on.
+- **Iterate** on their feedback (copy, order, scenes, theme) until they say it's good. Each change: edit `story.json`, re-run the validator, re-check the affected steps.
+- **Only then ask, once:** *"Happy to leave it local. Do you want me to (a) keep it local, (b) deploy it to a public URL — `bash scripts/deploy.sh <dir>` → Vercel, free, needs `vercel login`, (c) export a PDF/PNG handout — `node scripts/export_steps.mjs <url> <out>`, needs Playwright, or (d) push the repo to GitHub?"* Default is (a). Do nothing outward-facing without an explicit yes. If they decline, stop; offer to add a LICENSE (code MIT; data keeps its own licence with attribution in the footer) and finish.
 
 ## Rules
 - Numbers: computed, cited, traceable to `public/data/`. If a value looks implausible (e.g. life expectancy 18), investigate; exclude with a footer note rather than plot nonsense.
@@ -74,4 +86,5 @@ Summarise the story in a few lines, list caveats, give run instructions — incl
 - **Authenticity:** the page must read as a finished piece. Never render workflow words on it — no "Scene A", "step 3", "placeholder", "TODO", "option", "draft", "sample", "lorem". Titles are real headlines, not "Data Story" / "My Dashboard". Copy sounds like a human wrote it for the reader, not a note to the model.
 - **Anti-slop:** don't default to the same look every time — choose the theme for the subject and audience; vary accents; no generic titles; no filler steps ("here is a chart of X"). Every step earns its place with a claim the chart makes visible.
 - Don't over-scene: 15–25 steps total is a full story; 8–12 is a good short one. Cut the weakest scene before adding a chart type.
+- Local first. The finished product lives on the user's machine until they choose otherwise. Deploying, pushing to GitHub, or creating cloud projects are separate decisions the user makes after seeing the page.
 - Progressive disclosure: read `story-schema.md` and *one* example; don't bulk-read examples or the engine source. If a chart the story needs doesn't exist, first express it with an existing type (facets, highlight sets, inline bar values); only then add a chart module in `template/src/charts/` following the `render(state, immediate)` / `progress(p)` contract, and document it in `reference/story-schema.md`.
