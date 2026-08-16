@@ -181,9 +181,16 @@ def check_state(v, t, spec, state, data, ctx, is_step=False):
     d = spec.get("data"); cols = data.get(d, {}).get("cols", set()) if d else set(); rows = data.get(d, {}).get("rows", []) if d else []
     check_where(v, state.get("where"), cols, ctx)
     if t == "number":
-        if is_step and state.get("value") is None: v.e(f"{ctx}: number needs state.value")
+        if is_step and state.get("value") is None and not state.get("values"): v.e(f"{ctx}: number needs state.value or state.values[]")
         for k in ("value", "max", "from"):
             if k in state and not isinstance(state[k], (int, float)): check_ref(v, state[k], data, f"{ctx}.{k}")
+        vals = state.get("values")
+        if vals is not None:
+            if not isinstance(vals, list) or not (2 <= len(vals) <= 3): v.e(f"{ctx}: values must be a list of 2–3 items")
+            else:
+                for i, it in enumerate(vals):
+                    if not isinstance(it, dict) or "value" not in it: v.e(f"{ctx}: values[{i}] needs value (and label)")
+                    else: check_ref(v, it["value"], data, f"{ctx}.values[{i}].value")
     if t == "bar":
         for i, item in enumerate(state.get("values") or []):
             if not isinstance(item, dict) or "category" not in item: v.e(f"{ctx}: values[{i}] needs category")

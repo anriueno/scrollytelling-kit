@@ -29,9 +29,10 @@ Formats: a d3-format string (`",.0f"`, `".1%"`) or `{ "format": ",.0f", "prefix"
 
 ## Chart types
 
-### `number` — hero number with count-up (and optional proportional dot)
+### `number` — hero number with count-up; two or three numbers compare as circles
 spec: `{ "type": "number", "format", "color" }`
-state: `{ "value": ref, "max": ref (dot area scale), "from": 0, "label", "sublabel", "dot": true }`
+state (one number): `{ "value": ref, "from": 0, "label", "sublabel" }` — just the number, **no circle** (a lone circle scaled against nothing is decoration; `dot: true` + `max` forces one if you must).
+state (comparison): `{ "values": [ { "value": ref, "label", "color" }, { … } ], "sublabel" }` — 2–3 circles side by side, area ∝ value, number above each. Use this when the point *is* the ratio (e.g. solar 2,143 vs wind 2,510; home wins 50.7% vs away 26.4%).
 
 ### `area` — stacked area, morphs to 100 % share
 spec: `{ "type": "area", "data", "x": "year", "series": ["a","b",…] (bottom→top), "labels": {col: "Label"}, "colors": {col: "#hex"}, "format", "xFormat", "xTicks", "legend": false (hide the legend when > 8 series — direct labels carry identity), "defaults": {…} }`

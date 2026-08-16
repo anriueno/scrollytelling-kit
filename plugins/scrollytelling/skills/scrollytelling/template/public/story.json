@@ -89,13 +89,6 @@
        },
        "column": "solar"
       },
-      "max": {
-       "data": "world",
-       "where": {
-        "year": 2024
-       },
-       "column": "wind"
-      },
       "label": "TWh of solar electricity, 2000",
       "from": 0
      }
@@ -112,13 +105,6 @@
        },
        "column": "solar"
       },
-      "max": {
-       "data": "world",
-       "where": {
-        "year": 2024
-       },
-       "column": "wind"
-      },
       "label": "TWh of solar electricity, 2024"
      }
     },
@@ -127,22 +113,31 @@
      "heading": "Wind did almost the same.",
      "text": "Wind went from 31 TWh to <strong>2,510 TWh</strong>. Together, solar and wind now supply <strong>15% of the world's electricity</strong>.",
      "state": {
-      "value": {
-       "data": "world",
-       "where": {
-        "year": 2024
+      "values": [
+       {
+        "value": {
+         "data": "world",
+         "where": {
+          "year": 2024
+         },
+         "column": "solar"
+        },
+        "label": "Solar, TWh 2024",
+        "color": "#f5b700"
        },
-       "column": "wind"
-      },
-      "max": {
-       "data": "world",
-       "where": {
-        "year": 2024
-       },
-       "column": "wind"
-      },
-      "label": "TWh of wind electricity, 2024",
-      "sublabel": ""
+       {
+        "value": {
+         "data": "world",
+         "where": {
+          "year": 2024
+         },
+         "column": "wind"
+        },
+        "label": "Wind, TWh 2024",
+        "color": "#1ba39a"
+       }
+      ],
+      "sublabel": "Together: 15% of world electricity"
      }
     },
     {
