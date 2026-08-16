@@ -68,11 +68,11 @@ export const rowsHtml = (pairs) => pairs.map(([k, v, c]) => `<div class="row"><s
 
 // shared chrome: title/subtitle + legend div
 export function chrome(el, svg) {
-  const title = svg.append("text").attr("class", "chart-title").attr("y", 20);
-  const sub = svg.append("text").attr("class", "chart-sub").attr("y", 40);
+  const head = el.append("div").attr("class", "chart-head");
+  const title = head.append("h3"), sub = head.append("p");
   const legend = el.append("div").attr("class", "legend").style("top", "48px");
   return {
-    set(t, s) { title.text(t || ""); sub.text(s || ""); },
+    set(t, s) { title.text(t || ""); sub.text(s || ""); const h = head.node().offsetHeight; if (h) legend.style("top", Math.max(44, h + 6) + "px"); },
     legend(items) { // [[label, color]]
       const li = legend.selectAll("span").data(items || [], (d) => d[0]);
       li.enter().append("span").merge(li).style("--c", (d) => d[1]).text((d) => d[0]); li.exit().remove();
@@ -91,7 +91,15 @@ export function drawAnnotations(g, anns, xs, ys, t, plot) {
   const px = (d) => (d.px != null ? d.px : xs(d.x)), py = (d) => (d.py != null ? d.py : d.y != null ? ys(d.y) : plot.top + 14);
   m.select("line").attr("x1", px).attr("x2", (d) => (d.line && d.line.x2 != null ? xs(d.line.x2) : px(d))).attr("y1", (d) => (d.xRule ? plot.top : py(d))).attr("y2", (d) => (d.xRule ? plot.bottom : d.line && d.line.y2 != null ? ys(d.line.y2) : py(d))).attr("opacity", (d) => (d.xRule || d.line ? 1 : 0));
   m.select("circle").attr("cx", px).attr("cy", py).attr("opacity", (d) => (d.dot ? 1 : 0));
-  m.select("text").attr("x", (d) => px(d) + (d.dx ?? (d.anchor === "end" ? -6 : 6))).attr("y", (d) => (d.xRule ? plot.bottom - 16 - (d.level || 0) * 18 : py(d) + (d.dy ?? -8))).attr("text-anchor", (d) => d.anchor || "start").text((d) => d.text);
+  const svgW = (g.node().ownerSVGElement && g.node().ownerSVGElement.viewBox.baseVal.width) || 0;
+  const CH = 6.6;
+  const anchorOf = (d) => { const a = d.anchor || "start"; if (!svgW || a !== "start") return a; const w = (d.text || "").length * CH; return px(d) + 6 + w > svgW - 4 && px(d) > svgW / 2 ? "end" : "start"; };
+  // wrap text that doesn't fit on its side of the anchor into ≤ 3 lines
+  const linesOf = (d) => { const a = anchorOf(d); const avail = svgW ? (a === "end" ? px(d) - 8 : svgW - px(d) - 8) : Infinity; const maxCh = Math.max(12, Math.floor(avail / CH)); const words = String(d.text || "").split(" "); const lines = [""]; for (const w of words) { if ((lines[lines.length - 1] + " " + w).trim().length > maxCh && lines[lines.length - 1]) lines.push(w); else lines[lines.length - 1] = (lines[lines.length - 1] + " " + w).trim(); } return lines.slice(0, 3); };
+  m.select("text").attr("x", (d) => px(d) + (d.dx ?? (anchorOf(d) === "end" ? -6 : 6))).attr("y", (d) => (d.xRule ? plot.bottom - 16 - (d.level || 0) * 18 - (linesOf(d).length - 1) * 14 : py(d) + (d.dy ?? -8))).attr("text-anchor", anchorOf).each(function (d) {
+    const lines = linesOf(d); const t = d3.select(this); t.text(null);
+    lines.forEach((ln, i) => t.append("tspan").attr("x", px(d) + (d.dx ?? (anchorOf(d) === "end" ? -6 : 6))).attr("dy", i ? "1.15em" : 0).text(ln));
+  });
   m.transition().duration(t).delay(t * 0.6).attr("opacity", 1);
   sel.exit().transition().duration(t / 3).attr("opacity", 0).remove();
 }

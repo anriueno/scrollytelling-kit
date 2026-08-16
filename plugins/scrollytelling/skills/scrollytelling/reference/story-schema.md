@@ -86,3 +86,6 @@ Use for: goals per match over 49k games, order sizes, prices, ages — anything 
 ## Runtime hooks (QA & deep links)
 - `?theme=`, `?font=`, `?density=`, `?accent=` — preview overrides. `?edit=1` — open in edit mode (dev / editor:true).
 - `?step=<sceneId>:<index>` — render and scroll to a specific step on load. `window.scrolly.goto(sceneId, index)` / `window.scrolly.list()` — same from the console or an automation tool.
+
+## Mobile behaviour (built in — nothing to configure)
+Below 900 px the layout switches to two bands: the graphic is sticky in the top 52 svh, and each step's card rests in the band below it (`position: sticky`) while active; inactive cards are hidden, so text never scrolls over the chart. Sizes use `svh` (stable small-viewport units) so browser chrome showing/hiding doesn't shift triggers. Chart titles wrap; long annotations flip or wrap; small-multiple legends hide when redundant. Keep mobile in mind when writing copy: ≤ 40 words per card, and no more than ~5 lines of heading+text.

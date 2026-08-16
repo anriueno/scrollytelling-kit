@@ -44,7 +44,7 @@ async function main() {
   const scenes = [];
   story.scenes.forEach((sc, si) => {
     const id = sc.id || `s${si}`;
-    const stepsHtml = sc.steps.map((st, i) => { const inner = `${st.heading ? `<h2>${st.heading}</h2>` : ""}${st.text ? `<p>${st.text}</p>` : ""}${st.html || ""}`; return st.tall ? `<div class="step step-tall" data-step="${i}"><div class="step-inner">${inner}</div></div>` : `<div class="step" data-step="${i}">${inner}</div>`; }).join("");
+    const stepsHtml = sc.steps.map((st, i) => { const inner = `${st.heading ? `<h2>${st.heading}</h2>` : ""}${st.text ? `<p>${st.text}</p>` : ""}${st.html || ""}`; return `<div class="step${st.tall ? " step-tall" : ""}" data-step="${i}"><div class="step-inner">${inner}</div></div>`; }).join("");
     app.insertAdjacentHTML("beforeend", `<section class="scrolly" id="scrolly-${id}" data-scrolly="${id}"><figure class="graphic"><div class="chart" id="chart-${id}"></div></figure><div class="steps">${stepsHtml}</div></section>`);
     const container = document.getElementById(`chart-${id}`);
     const charts = {};
@@ -71,7 +71,7 @@ async function main() {
     const scene = scenes.find((s) => s.id === String(sceneId)); if (!scene) return false;
     const steps = document.querySelectorAll(`#scrolly-${scene.id} .step`); const i = Math.max(0, Math.min(steps.length - 1, +index || 0));
     steps.forEach((s) => s.classList.remove("is-active")); steps[i].classList.add("is-active"); renderStep(scene, i, false);
-    if (scroll) { const r = steps[i].getBoundingClientRect(); window.scrollTo({ top: r.top + window.scrollY - window.innerHeight * (window.innerWidth < 900 ? 0.7 : 0.55) + 30, behavior: "instant" }); }
+    if (scroll) { const r = steps[i].getBoundingClientRect(); window.scrollTo({ top: r.top + window.scrollY - window.innerHeight * (window.innerWidth < 900 ? 0.56 : 0.55) + 30, behavior: "instant" }); }
     return true;
   };
   window.scrolly = { goto, list: () => scenes.map((s) => ({ scene: s.id, steps: s.sc.steps.length, charts: Object.keys(s.charts) })), scenes };
@@ -101,7 +101,7 @@ async function main() {
   scenes.forEach((scene) => {
     const steps = document.querySelectorAll(`#scrolly-${scene.id} .step`);
     const scroller = scrollama();
-    scroller.setup({ step: steps, offset: window.innerWidth < 900 ? 0.7 : 0.55, progress: true })
+    scroller.setup({ step: steps, offset: window.innerWidth < 900 ? 0.56 : 0.55, progress: true })
       .onStepEnter(({ element, index }) => { steps.forEach((s) => s.classList.remove("is-active")); element.classList.add("is-active"); renderStep(scene, index, false); })
       .onStepExit(({ index, direction }) => { if (index === 0 && direction === "up") renderStep(scene, 0, false); })
       .onStepProgress(({ index, progress }) => { const st = scene.sc.steps[index]; if (st && st.state && (st.state.scrub) && scene.lastIndex === index) { const { chart } = stateFor(scene, index); chart.api.progress(progress); } });

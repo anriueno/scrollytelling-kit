@@ -77,7 +77,8 @@ plugins/scrollytelling/
 ## Design principles baked in
 - Every number on the page comes from the CSVs; annotations use `{value}` templating; fits are computed in the browser.
 - Each step's state fully describes the picture, so scrolling backwards is always clean.
-- Missing ≠ zero; dark-surface palette validated for colour-vision deficiency; reduced-motion respected; mobile layout.
+- Missing ≠ zero; dark-surface palette validated for colour-vision deficiency; reduced-motion respected.
+- Mobile: two-band layout (graphic sticky on top, the active card resting below it — text never covers the chart), `svh` units so browser chrome doesn't shift triggers, wrapping titles/annotations.
 
 ## Prior art
 [ScrollyTeller](https://github.com/ihmeuw/ScrollyTeller) (IHME) builds narration from CSV but leaves charts to you; [Closeread](https://closeread.dev) does scrollytelling in Quarto; [Scrollama](https://github.com/russellsamora/scrollama) is the trigger library used here. This kit adds declarative charts and the AI-guided storyboarding step.

@@ -6,7 +6,7 @@ Run `npm run dev`, open the URL, and for **every step** (jump with `?step=<scene
 3. Hover: tooltip appears with the right values.
 Then:
 4. Scroll from the last step back to the first, then forward again — no leftover paths/labels/annotations, hero numbers reset.
-5. Resize to ~400 px wide: nothing overflows horizontally; text remains readable; scrubs still work.
+5. Resize to ~390 px wide (or emulate a phone): the chart sits in the top band and the active card rests **below** it — never on top; outgoing cards are invisible while they pass over the chart; titles wrap, annotations wrap or flip instead of overflowing; scrubs still work with the card below the graphic. Test with a fast flick, not just slow scrolling.
 6. Console: zero errors.
 7. `npm run build` succeeds; `dist/` is small (< 2 MB); only the cut CSVs are shipped (raw downloads live in `data/raw/`, not `public/`).
 8. Numbers in the copy match the data (grep the CSV for each headline figure).

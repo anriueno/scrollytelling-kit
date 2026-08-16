@@ -15,7 +15,7 @@ export function createMap(container, spec, datasets, { geo }) {
   const f = fmt(spec.format);
   const scale = d3.scaleSequential(d3.interpolateLab(...(spec.colors || [INK.seqLow, INK.seqHigh]))).domain(spec.domain || d3.extent(rows, (r) => num(r[spec.value]))).clamp(true);
   const grad = defs.append("linearGradient").attr("id", "mgrad"); d3.range(0, 1.01, 0.1).forEach((k) => grad.append("stop").attr("offset", k).attr("stop-color", scale(scale.domain()[0] + k * (scale.domain()[1] - scale.domain()[0]))));
-  gLeg.append("rect").attr("width", 260).attr("height", 8).attr("rx", 2).attr("fill", "url(#mgrad)"); gLeg.append("text").attr("class", "label").attr("y", 22).text(f(scale.domain()[0])); gLeg.append("text").attr("class", "label").attr("x", 260).attr("y", 22).attr("text-anchor", "end").text(`${f(scale.domain()[1])}${spec.domain ? "+" : ""}${spec.unit ? " " + spec.unit : ""}`);
+  const legRect = gLeg.append("rect").attr("width", 260).attr("height", 8).attr("rx", 2).attr("fill", "url(#mgrad)"); gLeg.append("text").attr("class", "label").attr("y", 22).text(f(scale.domain()[0])); const legHi = gLeg.append("text").attr("class", "label").attr("x", 260).attr("y", 22).attr("text-anchor", "end").text(`${f(scale.domain()[1])}${spec.domain ? "+" : ""}${spec.unit ? " " + spec.unit : ""}`);
   const hl = gLeg.append("g").attr("transform", "translate(0,32)"); hl.append("rect").attr("width", 14).attr("height", 10).attr("fill", "url(#hatch)"); hl.append("text").attr("class", "label").attr("x", 20).attr("y", 9).text("no data");
   let year = null, valueCol = spec.value, cur = {};
   const val = (iso) => lookup.get(spec.year ? `${iso}|${year}` : iso);
@@ -27,8 +27,10 @@ export function createMap(container, spec, datasets, { geo }) {
     p.enter().append("path").attr("stroke", INK.bg).attr("stroke-width", 0.6)
       .on("mousemove", (ev, ft) => { const r = val(ft.id); showTip(`<b>${names.get(ft.id) || ft.properties.name}</b>${year != null ? " · " + year : ""}` + (r ? rowsHtml([[spec.valueLabel || valueCol, f(num(r[valueCol]))], ...(spec.tooltip || []).map((c) => [c, r[c]])]) : "<div>No data</div>"), ev); }).on("mouseleave", hideTip)
       .merge(p).attr("d", path).attr("fill", fill);
-    yearText.attr("x", width - 20).attr("y", height - 24).text(year ?? "").attr("opacity", year != null ? 0.85 : 0);
-    gLeg.attr("transform", `translate(20,${height - 52})`);
+    const narrow = width < 640, lw = narrow ? 150 : 260;
+    legRect.attr("width", lw); legHi.attr("x", lw);
+    yearText.attr("font-size", narrow ? 40 : 64).attr("x", width - 12).attr("y", narrow ? height - 30 : height - 24).text(year ?? "").attr("opacity", year != null ? 0.85 : 0);
+    gLeg.attr("transform", `translate(${narrow ? 10 : 20},${height - 52})`);
   }
   return {
     render(state) { cur = state; ch.set(state.title ?? spec.title, state.subtitle ?? spec.subtitle); valueCol = state.value || spec.value; year = state.year ?? (state.scrub ? state.scrub[0] : year); draw(); },
