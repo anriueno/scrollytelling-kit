@@ -1,0 +1,1 @@
+Test story exercising slope (teams: away→home win rate), dumbbell (top-15), waffle (host wins of 134; composition), histogram (goals per match, highlight range, mean/median, era comparison outline). Data: teams.csv/wc_hosts.csv from a football-results story; matches.csv = year,goals,era cut from martj42/international_results.

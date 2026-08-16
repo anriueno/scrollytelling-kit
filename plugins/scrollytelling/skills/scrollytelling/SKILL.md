@@ -13,7 +13,7 @@ description: >-
   export. Invoke with an optional path to the data file.
 license: MIT
 metadata:
-  version: "0.3.6"
+  version: "0.4.0"
   author: anriueno
 ---
 
@@ -22,11 +22,11 @@ metadata:
 You are helping the user turn a dataset into a scroll-driven data story. The hard part is **the story**, not the code — the engine in `template/` renders everything from `public/story.json`; you never need to write D3 unless a chart type is genuinely missing.
 
 Kit layout (this skill's directory):
-- `template/` — Vite + D3 + Scrollama engine. Chart types: `number, area, line, bar, scatter, beeswarm, map`. Reads `public/story.json` + `public/data/*.csv`. Three visual themes (`dark`, `paper`, `bold`) and two density modes.
+- `template/` — Vite + D3 + Scrollama engine. Chart types: `number, area, line, bar, scatter, beeswarm, map, slope, waffle, histogram`. Reads `public/story.json` + `public/data/*.csv`. Three visual themes (`dark`, `paper`, `bold`) and two density modes.
 - `reference/story-schema.md` — **read this before writing story.json** (all spec/state options).
 - `reference/storyboard-template.md`, `reference/qa-checklist.md`
 - `scripts/profile_data.py <csv>` — streaming profile (any file size): column types, roles, chart suggestions · `scripts/validate_story.py <project>` — semantic validator: every column/filter/annotation/value reference resolved against the data, ids/facets/series exist, log-axis and ISO3 checks, theme/font ids, placeholder words; **run it after every story.json edit and fix all ERRORs** · `scripts/new_story.sh <dir> [csv…]` — scaffold · `scripts/deploy.sh <dir>` — Vercel · `scripts/export_steps.mjs <url> <out>` — PNG per step + PDF handout.
-- `examples/` — finished story.json files. **Read only the one closest to your data shape** (never all of them): `solar-century` (wide time series → area/share morph, bars, line facets, beeswarm, world map), `price-of-a-year` (entity × year panel → scatter with fit, gap, year scrub, connected paths), `retail-shift` (monthly macro series → two-line crossover, area with many series, negative bars, small multiples), `superstore` (raw transactions → aggregated CSVs).
+- `examples/` — finished story.json files. **Read only the one closest to your data shape** (never all of them): `solar-century` (wide time series → area/share morph, bars, line facets, beeswarm, world map), `price-of-a-year` (entity × year panel → scatter with fit, gap, year scrub, connected paths), `retail-shift` (monthly macro series → two-line crossover, area with many series, negative bars, small multiples), `superstore` (raw transactions → aggregated CSVs), `football-charts` (slope/dumbbell, waffle, histogram with comparison).
 
 ## Five checkpoints — the user decides, you wait
 This is collaborative authoring, not a batch job. At each of these points, **stop, ask, and wait for the user's answer** before doing anything further. Do not "propose and proceed"; do not assume silence is consent. If you notice you are building without having passed a checkpoint, stop and go back to it.

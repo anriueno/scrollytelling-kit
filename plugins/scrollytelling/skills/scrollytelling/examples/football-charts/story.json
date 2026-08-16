@@ -1,0 +1,228 @@
+{
+ "title": "New charts test",
+ "kicker": "engine test",
+ "subtitle": "slope \u00b7 waffle \u00b7 histogram",
+ "theme": {
+  "preset": "dark"
+ },
+ "data": {
+  "teams": "teams.csv",
+  "hosts": "wc_hosts.csv",
+  "matches": "matches.csv"
+ },
+ "scenes": [
+  {
+   "id": "s",
+   "charts": {
+    "sl": {
+     "type": "slope",
+     "data": "teams",
+     "id": "team",
+     "from": {
+      "column": "win_away",
+      "label": "Away win %"
+     },
+     "to": {
+      "column": "win_home",
+      "label": "Home win %"
+     },
+     "format": {
+      "format": ".0f",
+      "suffix": "%"
+     },
+     "where": {
+      "matches": {
+       "gte": 300
+      }
+     },
+     "tooltip": [
+      "record"
+     ],
+     "defaults": {
+      "title": "Win rate away \u2192 home, teams with 300+ matches",
+      "subtitle": "Every line rises: home is better everywhere"
+     }
+    }
+   },
+   "steps": [
+    {
+     "heading": "Every line rises.",
+     "text": "Slope chart, all teams.",
+     "state": {
+      "labels": [
+       "Bolivia",
+       "Germany",
+       "Brazil"
+      ]
+     }
+    },
+    {
+     "heading": "The steepest.",
+     "text": "Highlight the biggest jumps.",
+     "state": {
+      "highlight": [
+       "Bolivia",
+       "Guinea",
+       "Egypt",
+       "Sierra Leone"
+      ],
+      "highlightLabel": "Biggest home edge",
+      "labels": "highlight"
+     }
+    },
+    {
+     "heading": "As a ranked dumbbell.",
+     "text": "Top 15 by home win rate.",
+     "state": {
+      "dumbbell": true,
+      "sort": "to",
+      "limit": 15,
+      "highlight": [
+       "Brazil",
+       "Germany"
+      ],
+      "labels": "all"
+     }
+    }
+   ]
+  },
+  {
+   "id": "w",
+   "charts": {
+    "wf": {
+     "type": "waffle",
+     "format": ",.0f"
+    }
+   },
+   "steps": [
+    {
+     "heading": "Hosts win 61%.",
+     "text": "82 wins of 134.",
+     "state": {
+      "value": {
+       "data": "hosts",
+       "column": "wins",
+       "agg": "sum"
+      },
+      "total": {
+       "data": "hosts",
+       "column": "matches",
+       "agg": "sum"
+      },
+      "label": "host wins",
+      "sublabel": "World Cup matches played by the host, 1930\u20132026"
+     }
+    },
+    {
+     "heading": "\u2026and the rest.",
+     "text": "Composition.",
+     "state": {
+      "parts": [
+       {
+        "value": {
+         "data": "hosts",
+         "column": "wins",
+         "agg": "sum"
+        },
+        "label": "host wins",
+        "color": "#7bd88f"
+       },
+       {
+        "value": {
+         "data": "hosts",
+         "column": "draws",
+         "agg": "sum"
+        },
+        "label": "draws",
+        "color": "#6b7280"
+       },
+       {
+        "value": {
+         "data": "hosts",
+         "column": "losses",
+         "agg": "sum"
+        },
+        "label": "host defeats",
+        "color": "#e66767"
+       }
+      ],
+      "sublabel": "134 host matches"
+     }
+    }
+   ]
+  },
+  {
+   "id": "h",
+   "charts": {
+    "hg": {
+     "type": "histogram",
+     "data": "matches",
+     "x": "goals",
+     "bins": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "xDomain": [
+      0,
+      12
+     ],
+     "format": ",.0f",
+     "xLabel": "Goals per match \u2192",
+     "defaults": {
+      "title": "Goals per international match",
+      "subtitle": "49,000+ matches since 1872"
+     }
+    }
+   },
+   "steps": [
+    {
+     "heading": "Most matches have 2\u20133 goals.",
+     "text": "All matches.",
+     "state": {
+      "showMean": true,
+      "showMedian": true
+     }
+    },
+    {
+     "heading": "Goalless draws.",
+     "text": "Highlight 0.",
+     "state": {
+      "highlightRange": [
+       0,
+       1
+      ],
+      "highlightLabel": "0-0 draws",
+      "normalize": true
+     }
+    },
+    {
+     "heading": "Then vs now.",
+     "text": "Before 1960 (outline) vs 2000 onwards (bars).",
+     "state": {
+      "normalize": true,
+      "where": {
+       "era": "2000 onwards"
+      },
+      "compareWhere": {
+       "era": "before 1960"
+      },
+      "legend": "2000 onwards",
+      "compareLabel": "before 1960"
+     }
+    }
+   ]
+  }
+ ],
+ "footerHtml": "<p>test</p>"
+}

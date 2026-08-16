@@ -7,7 +7,7 @@ Checks (ERROR = will break or mislead; warn = probably wrong):
   · log-axis columns with values <= 0 · map ISO3 codes vs the GeoJSON · scrub on tall steps · theme preset / font / density ids
   · step text present, length; workflow words on the page (authenticity) · footer present."""
 import json, sys, os, csv, re
-TYPES = {"number", "area", "bar", "line", "beeswarm", "map", "scatter"}
+TYPES = {"number", "area", "bar", "line", "beeswarm", "map", "scatter", "slope", "waffle", "histogram"}
 THEMES = {"dark", "paper", "bold"}; DENSITY = {"reading", "presentation"}
 FONTS = {"system", "fraunces", "playfair", "newsreader", "libre", "dmserif", "cormorant", "syne", "bebas", "archivo", "plexmono"}
 WORKFLOW = re.compile(r"\b(scene [a-z0-9]|step \d|placeholder|todo|lorem|draft|option [abc]|sample text|tbd)\b", re.I)
@@ -108,8 +108,15 @@ def main(root, as_json=False):
             ctx = f"{ctxs} chart '{name}'"; t = spec.get("type")
             if t not in TYPES: v.e(f"{ctx}: unknown type '{t}'"); continue
             d = spec.get("data"); cols = data.get(d, {}).get("cols", set()) if d else set()
-            if t != "number" and not (t == "bar" and not d):
+            if t not in ("number", "waffle") and not (t == "bar" and not d):
                 if d not in data: v.e(f"{ctx}: data '{d}' not declared"); continue
+            if t == "slope":
+                for k in ("from", "to"):
+                    fr = spec.get(k)
+                    if not isinstance(fr, dict) or "column" not in fr: v.e(f"{ctx}: slope needs {k}:{{column,label}}")
+                    elif d and fr["column"] not in cols: v.e(f"{ctx}: {k}.column '{fr['column']}' not in {d}")
+                if not spec.get("id"): v.e(f"{ctx}: slope needs id")
+            if t == "histogram" and not spec.get("x"): v.e(f"{ctx}: histogram needs x")
             for key in ("x", "y", "size", "id", "year", "facet", "category", "value", "note", "name"):
                 c = spec.get(key)
                 if c is not None and d and c not in cols: v.e(f"{ctx}: {key}='{c}' not a column of {d}")
@@ -225,6 +232,26 @@ def check_state(v, t, spec, state, data, ctx, is_step=False):
         if state.get("scrub") and not spec.get("year"): v.e(f"{ctx}: scrub needs a year column in the chart spec")
         if state.get("fit") and state["fit"] not in ("log", "linear"): v.e(f"{ctx}: fit must be log|linear")
         if state.get("colorBy") and d and state["colorBy"] not in cols: v.e(f"{ctx}: colorBy '{state['colorBy']}' not in {d}")
+    if t == "waffle":
+        if is_step and state.get("value") is None and not state.get("parts"): v.e(f"{ctx}: waffle needs state.value or state.parts[]")
+        for k in ("value", "total"):
+            if k in state and not isinstance(state[k], (int, float)): check_ref(v, state[k], data, f"{ctx}.{k}")
+        for i, it in enumerate(state.get("parts") or []):
+            if not isinstance(it, dict) or "value" not in it: v.e(f"{ctx}: parts[{i}] needs value")
+            else: check_ref(v, it["value"], data, f"{ctx}.parts[{i}].value")
+    if t == "slope":
+        ids = col_values(data, d, spec["id"]) if d and spec.get("id") else set()
+        for k in ("highlight",):
+            for c in state.get(k) or []:
+                if ids and c not in ids: v.w(f"{ctx}: {k} '{c}' not in {d}.{spec.get('id')}")
+        if isinstance(state.get("labels"), list):
+            for c in state["labels"]:
+                if ids and c not in ids: v.w(f"{ctx}: label id '{c}' not in {d}.{spec.get('id')}")
+        if state.get("sort") and state["sort"] not in ("to", "from", "change", "none"): v.e(f"{ctx}: sort must be to|from|change|none")
+    if t == "histogram":
+        hr = state.get("highlightRange")
+        if hr is not None and (not isinstance(hr, list) or len(hr) != 2): v.e(f"{ctx}: highlightRange must be [lo, hi]")
+        check_where(v, state.get("compareWhere"), cols, f"{ctx}.compareWhere")
     if t == "map":
         if state.get("year") is not None and spec.get("year") and d and str(state["year"]) not in col_values(data, d, spec["year"]): v.e(f"{ctx}: year {state['year']} not present in {d}.{spec['year']}")
         if state.get("scrub") and not spec.get("year"): v.e(f"{ctx}: scrub needs a year column")

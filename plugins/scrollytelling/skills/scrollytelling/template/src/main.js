@@ -10,9 +10,12 @@ import { createLine } from "./charts/line.js";
 import { createBeeswarm } from "./charts/beeswarm.js";
 import { createMap } from "./charts/map.js";
 import { createScatter } from "./charts/scatter.js";
+import { createSlope } from "./charts/slope.js";
+import { createWaffle } from "./charts/waffle.js";
+import { createHistogram } from "./charts/histogram.js";
 
 const base = import.meta.env.BASE_URL || "/";
-const FACTORIES = { number: createNumber, area: createArea, bar: createBar, line: createLine, beeswarm: createBeeswarm, map: createMap, scatter: createScatter };
+const FACTORIES = { number: createNumber, area: createArea, bar: createBar, line: createLine, beeswarm: createBeeswarm, map: createMap, scatter: createScatter, slope: createSlope, waffle: createWaffle, histogram: createHistogram };
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 async function main() {

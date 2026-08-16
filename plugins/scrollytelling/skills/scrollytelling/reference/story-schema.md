@@ -61,6 +61,22 @@ spec: `{ "type": "map", "data", "id": iso3 col, "name": col, "value": col, "year
 state: `{ "year": 2024, "scrub": [2000, 2024] (tall step), "value": col }`
 Missing values are hatched, never zero.
 
+### `slope` — "then vs now" per entity (slope chart, or dumbbell rows)
+spec: `{ "type": "slope", "data", "id", "from": { "column", "label" }, "to": { "column", "label" }, "format", "color", "accent": {id: hex}, "tooltip": [cols], "where", "yDomain" | "xDomain" }` (wide data: one row per entity, two value columns)
+state: `{ "highlight": [ids], "highlightColor", "highlightLabel", "labels": [ids] | "highlight" | "all", "dumbbell": true (horizontal rows instead of two axes), "sort": "to" | "from" | "change" | "none", "limit", "dim": true, "where" }`
+Use for: 2000 vs 2024 by country, before/after by category, home vs away by team. Slope for ≤ ~40 entities; `dumbbell` + `limit` for a ranked top-N.
+
+### `waffle` — unit chart: "x of y", "1 in N", or a composition
+spec: `{ "type": "waffle", "format", "cells": 100, "color" }`
+state (share): `{ "value": ref, "total": ref (omit → value is a percent of 100), "label", "sublabel" }`
+state (composition): `{ "parts": [ { "value": ref, "label", "color" }, … ], "total": ref (default = sum of parts), "sublabel" }`
+Use for: "82 wins · 23 draws · 29 defeats of 134", "1.8% of retail dollars", any share the reader should *count*.
+
+### `histogram` — distribution of one numeric column over many rows
+spec: `{ "type": "histogram", "data", "x", "bins": 20 | [thresholds], "xDomain", "format", "xLabel", "color", "where" }`
+state: `{ "where", "bins", "normalize": true (share of rows), "highlightRange": [lo, hi], "highlightColor", "highlightLabel", "showMean", "showMedian", "annotations": [{ "x", "text" }], "compareWhere": {…} (second distribution as an outline), "compareLabel", "legend" }`
+Use for: goals per match over 49k games, order sizes, prices, ages — anything with too many rows for a beeswarm. Needs the row-level (or lightly aggregated) CSV, not totals.
+
 ## Step patterns that work
 - Open with a `number` on the single most surprising value; move to context (`area`/`line`), then the twist (`normalize`, `highlight`, `gapToFit`), then who/where (`line` facets, `beeswarm`, `map`), then a scrub, then a personal/detail scene.
 - One idea per step, ≤ 40 words. 6–12 steps per scene; 3–5 scenes.

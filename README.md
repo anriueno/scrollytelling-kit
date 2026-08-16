@@ -41,7 +41,7 @@ ln -s "$(pwd)/scrollytelling-kit/plugins/scrollytelling/skills/scrollytelling" ~
 **Themes:** `dark` editorial (default) · `paper` (light, warm) · `bold` (black, big sans, hot accent) — set in `story.json` (`theme.preset`, `theme.accent`) or previewed with `?theme=`. **Density:** `reading` (default) or `presentation` (bigger type, fewer words) for scrolling live while you talk. **Reader toggle:** `"themeSwitcher": true` adds a Dark / Paper / Bold control and a font menu (10 curated Google-Fonts pairings, loaded on demand; `theme.font` / `?font=`) to the page, remembered per reader. **Inline editing:** press **E** on any story, click text, **⌘/Ctrl+S** — in `npm run dev` it writes straight back to `public/story.json`; on a published site it downloads the updated file.
 
 ## The engine (`template/`)
-Seven chart primitives, all declarative and step-state driven:
+Ten chart primitives, all declarative and step-state driven:
 
 | type | highlights |
 |---|---|
@@ -52,6 +52,9 @@ Seven chart primitives, all declarative and step-state driven:
 | `scatter` | size, log axes, **fit line**, gap-to-curve, highlight-by-filter, **scroll year-scrub**, **connected-scatter paths**, zoom |
 | `beeswarm` | distribution with tiered labels, colour-by |
 | `map` | world choropleth (ISO3), scroll year-scrub, hatched missing |
+| `slope` | then→now per entity: slope chart or ranked dumbbell, highlight/labels |
+| `waffle` | unit chart: x of y, 1 in N, or a composition of 100 squares |
+| `histogram` | distribution of a column over many rows; highlight range, mean/median, era comparison outline |
 
 Full options: `plugins/scrollytelling/skills/scrollytelling/reference/story-schema.md`. Examples: `…/examples/` (energy transition, health spending vs. life expectancy, retail sales & discounts).
 
